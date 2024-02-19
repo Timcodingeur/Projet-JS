@@ -36,11 +36,11 @@ Ce projet vise à réaliser le backend d'une application web nommée "Passion Le
 ```shell
 Node --version
 ```
-Output : v14.17.3
+
 ```shell
 npm --version
 ```
-Output : 6.14.13
+
 
 ### Installation of Nodemon
 ```shell
