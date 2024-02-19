@@ -59,6 +59,6 @@ npm install sequelize--save
 Le projet "Passion Lecture" est développé selon les exigences suivantes :
 
 * Objectif : Développer une API REST backend exploitable et professionnelle pour une application de partage de lectures.
-* Fonctionnalités : Gestion des livres, catégories, utilisateurs, authentification JWT, documentation Swagger, tests automatiques, et dockerisation.
+* Fonctionnalités : Gestion des livres, catégories, utilisateurs, authentification JWT, documentation Swagger, tests automatiques, et "dockerisation" (optionnel).
 * Technologies : Utilisation de Node.js, Express.js, Sequelize, MySQL, et Swagger.
 * Travail d'équipe : Projet réalisé par notre groupe de 5, avec une gestion collaborative via GitHub.
