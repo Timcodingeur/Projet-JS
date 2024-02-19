@@ -27,11 +27,11 @@ Ce projet vise à réaliser le backend d'une application web nommée "Passion Le
 
 ## Installation pour Windows
 ### Installation of Node and NPM :
-* Go to this link -> [Node Web Site](https://nodejs.org/en/download/)  
-* Install the .msi 64-bit installer  
-* Follow the installation  
-* Check the installation of Node and NPM
-* Check the version of Node and NPM
+* Allez sur ce lien -> Site Web de Node
+* Installez l'installateur .msi 64 bits
+* Suivez les instructions d'installation
+* Vérifiez l'installation de Node et NPM
+* Vérifiez la version de Node et NPM
 ```shell
 Node --version
 ```
