@@ -1,8 +1,14 @@
-let products = [
+let books = [
   {
     id: 1,
-    name: "Big Mac",
-    price: 5.99,
+    title: "OnePiece n°1",
+    extrait:
+      "Je nage peut-être comme une enclume, mais c'est pas un problème tant que je tombe pas à la mer!",
+    year: new Date(1997, 12, 24, 1, 2, 3, 4),
+    editor: "Éditions Glénat",
+    image: a,
+    resume:
+      "Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique. Depuis, il est capable de contorsionner son corps dans tous les sens, mais il a perdu la faculté de nager.",
     created: new Date(),
   },
   {

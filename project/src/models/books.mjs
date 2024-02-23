@@ -2,12 +2,12 @@ const ProductModel = (sequelize, DataTypes) => {
   return sequelize.define(
     "Books",
     {
-      id_ouvrage: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      Title: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
@@ -26,7 +26,7 @@ const ProductModel = (sequelize, DataTypes) => {
           },
         },
       },
-      Extrait: {
+      extrait: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -38,7 +38,7 @@ const ProductModel = (sequelize, DataTypes) => {
           },
         },
       },
-      Resume: {
+      resume: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -50,11 +50,11 @@ const ProductModel = (sequelize, DataTypes) => {
           },
         },
       },
-      Annee_edition: {
+      year: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      Nom_editeur: {
+      editor: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -66,15 +66,15 @@ const ProductModel = (sequelize, DataTypes) => {
           },
         },
       },
-      Nom_editeur: {
+      image: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
           notEmpty: {
-            msg: "Le prix ne peut pas être vide.",
+            msg: "L'image ne peut pas être vide",
           },
           notNull: {
-            msg: "Le prix est une propriété obligatoire",
+            msg: "l'image est une propriété obligatoire",
           },
         },
       },
