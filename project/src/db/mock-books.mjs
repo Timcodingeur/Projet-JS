@@ -6,15 +6,23 @@ let books = [
       "Je nage peut-être comme une enclume, mais c'est pas un problème tant que je tombe pas à la mer!",
     year: new Date(1997, 12, 24, 1, 2, 3, 4),
     editor: "Éditions Glénat",
-    image: a,
+    image:
+      "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/OnePiece1.jpg",
     resume:
       "Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique. Depuis, il est capable de contorsionner son corps dans tous les sens, mais il a perdu la faculté de nager.",
     created: new Date(),
   },
   {
     id: 2,
-    name: "Mc Chicken",
-    price: 4.99,
+    title: "Naruto n°1",
+    extrait:
+      " - Qu'est-ce que c'est... ... ce fameux serment ? - C'est de ne jamais dire qu'en réalité, tu es le démon-renard. ",
+    year: new Date(2002, 10, 3, 1, 2, 3, 4),
+    editor: "Shūeisha",
+    image:
+      "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Naruto1.jpg",
+    resume:
+      "Ce manga raconte l'histoire d'un jeune ninja du village de konoha qui s'appelle naruto uzumaki. Cet enfant est le pire élève de l'académie et n'est pas très aimé des villageois à cause d'un lourd secret qui le suit depuis sa naissance. Son rève est de devenir hokage (le ninja le plus fort ).",
     created: new Date(),
   },
   {
