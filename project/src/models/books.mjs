@@ -1,13 +1,13 @@
 const ProductModel = (sequelize, DataTypes) => {
   return sequelize.define(
-    "Product",
+    "Books",
     {
-      id: {
+      id_ouvrage: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      name: {
+      Title: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
@@ -26,26 +26,55 @@ const ProductModel = (sequelize, DataTypes) => {
           },
         },
       },
-      price: {
-        type: DataTypes.FLOAT,
+      Extrait: {
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          isFloat: {
-            msg: "Utiliser uniquement des nombres pour les prix",
-          },
           notEmpty: {
             msg: "Le prix ne peut pas être vide.",
           },
           notNull: {
             msg: "Le prix est une propriété obligatoire",
           },
-          min: {
-            args: [1.0],
-            msg: "Le prix doit être supérieur à 1$.",
+        },
+      },
+      Resume: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "Le prix ne peut pas être vide.",
           },
-          max: {
-            args: [1000.0],
-            msg: "le prix doit être inférieur à 1000$",
+          notNull: {
+            msg: "Le prix est une propriété obligatoire",
+          },
+        },
+      },
+      Annee_edition: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      Nom_editeur: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "Le prix ne peut pas être vide.",
+          },
+          notNull: {
+            msg: "Le prix est une propriété obligatoire",
+          },
+        },
+      },
+      Nom_editeur: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "Le prix ne peut pas être vide.",
+          },
+          notNull: {
+            msg: "Le prix est une propriété obligatoire",
           },
         },
       },
