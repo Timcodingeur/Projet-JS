@@ -26,7 +26,9 @@ Ce projet vise à réaliser le backend d'une application web nommée "Passion Le
 
 ## Contributors
 
-
+<a href="https://github.com/Timcodingeur/Projet-JS/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Timcodingeur/Projet-JS" />
+</a>
 
 ## Installation de Node and NPM
 ### Installation of Node and NPM :
