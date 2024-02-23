@@ -24,6 +24,8 @@
 
 Ce projet vise à réaliser le backend d'une application web nommée "Passion Lecture". Son but est de permettre aux utilisateurs de partager leur passion pour la lecture, en ajoutant, consultant, et commentant des ouvrages. Ce backend est construit avec Node.js et Express.js, utilise Sequelize comme ORM pour interagir avec une base de données MySQL, et est documenté avec Swagger pour faciliter la compréhension et l'utilisation de l'API.
 
+## Contributors
+
 
 
 ## Installation de Node and NPM
