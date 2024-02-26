@@ -5,7 +5,7 @@ export let books = [
     extrait:
       "Je nage peut-être comme une enclume, mais c'est pas un problème tant que je tombe pas à la mer!",
     year: new Date(1997, 12, 24, 1, 2, 3, 4),
-    editor: "Glénat",
+    editor: 2,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/OnePiece1.jpg",
     resume:
@@ -16,9 +16,9 @@ export let books = [
     id: 2,
     title: "Naruto n°1",
     extrait:
-      " - Qu'est-ce que c'est... ... ce fameux serment ? - C'est de ne jamais dire qu'en réalité, tu es le démon-renard. ",
+      "- Qu'est-ce que c'est... ... ce fameux serment ? - C'est de ne jamais dire qu'en réalité, tu es le démon-renard.",
     year: new Date(2002, 10, 3, 1, 2, 3, 4),
-    editor: "Shūeisha",
+    editor: 1,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Naruto1.jpg",
     resume:
@@ -30,7 +30,7 @@ export let books = [
     title: "Bleach n°1",
     extrait: "J'ai déjà réuni du monde. On va régler cette affaire !",
     year: new Date(2004, 10, 5, 1, 2, 3, 4),
-    editor: "Glénat",
+    editor: 2,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Bleach1.jfif",
     resume:
@@ -39,11 +39,11 @@ export let books = [
   },
   {
     id: 4,
-    name: "Jujutsu Kaisen n°1",
+    title: "Jujutsu Kaisen n°1",
     extrait:
       "Il a pris le temps d'acheter des souvenirs avant d'arriver ? Alors qu'on était sur le point de se faire tuer ?",
     year: new Date(2020, 2, 6, 1, 2, 3, 4),
-    editor: "Ki-oon",
+    editor: 3,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Jujutsu-Kaisen1.jpg",
     resume:
@@ -52,10 +52,10 @@ export let books = [
   },
   {
     id: 5,
-    name: "Berserk n°1",
-    extrait: "“Vous qui entrez ici, abandonnez toute espérance.”",
+    title: "Berserk n°1",
+    extrait: "Vous qui entrez ici, abandonnez toute espérance.",
     year: new Date(2017, 1, 18, 1, 2, 3, 4),
-    editor: "Glénat",
+    editor: 2,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Berserk1.jpg",
     resume:

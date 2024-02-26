@@ -2,6 +2,8 @@ import express from "express";
 
 import { productsRouter } from "./routes/products.mjs";
 
+import { booksRouter } from "./routes/books.mjs";
+
 import { sequelize, initDb } from "./db/sequelize.mjs";
 
 import { loginRouteur } from "./routes/login.mjs";
@@ -39,9 +41,17 @@ app.get("/", (req, res) => {
   res.redirect(`http://localhost:${port}`);
 });
 
-app.use("/api/products", productsRouter);
+app.use("/api/books", booksRouter);
 
-app.use("/api/login", loginRouteur);
+app.use("/api/comments", commentsRouteur);
+
+app.use("/api/editors", editorsRouteur);
+
+app.use("/api/users", usersRouteur);
+
+app.use("/api/authors", authorsRouteur);
+
+app.use("/api/categorys", categorysRouteur);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

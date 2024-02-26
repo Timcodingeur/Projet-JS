@@ -1,17 +1,27 @@
-export let author = [
+export let authors = [
   {
     id: 1,
-    Nom: Oda,
-    Prenom: Eiichiro,
+    lastname: "Oda",
+    firstname: "Eiichiro",
   },
   {
     id: 2,
-    Nom: Kishimoto,
-    Prenom: Masashi,
+    lastname: "Kishimoto",
+    firstname: "Masashi",
   },
   {
     id: 3,
-    Nom: Kubo,
-    Prenom: Tite,
+    lastname: "Kubo",
+    firstname: "Tite",
+  },
+  {
+    id: 4,
+    lastname: "Akutami",
+    firstname: "gege",
+  },
+  {
+    id: 5,
+    lastname: "Miura",
+    firstname: "Kentarō",
   },
 ];

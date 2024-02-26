@@ -1,4 +1,4 @@
-const EditorModel = (sequelize, DataTypes) => {
+export const EditorModel = (sequelize, DataTypes) => {
   return sequelize.define(
     "editor",
     {
@@ -31,5 +31,3 @@ const EditorModel = (sequelize, DataTypes) => {
     }
   );
 };
-
-export { EditorModel };

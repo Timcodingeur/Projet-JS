@@ -1,4 +1,4 @@
-const ProductModel = (sequelize, DataTypes) => {
+export const BooksModel = (sequelize, DataTypes) => {
   return sequelize.define(
     "Books",
     {
@@ -86,5 +86,3 @@ const ProductModel = (sequelize, DataTypes) => {
     }
   );
 };
-
-export { ProductModel };
