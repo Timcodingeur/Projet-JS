@@ -59,6 +59,12 @@ npm install express--save
 ```shell
 npm install sequelize--save
 ```
+### Installation Vitest
+
+```shell
+npm install vitest--save-dev
+```
+
 ## Cahier des charges
 Le projet "Passion Lecture" est développé selon les exigences suivantes :
 
