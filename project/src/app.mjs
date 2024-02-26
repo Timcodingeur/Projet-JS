@@ -4,6 +4,16 @@ import { productsRouter } from "./routes/products.mjs";
 
 import { booksRouter } from "./routes/books.mjs";
 
+import { commentsRouteur } from "./routes/comments.mjs";
+
+import { editorsRouteur } from "./routes/editor.mjs";
+
+import { usersRouteur } from "./routes/users.mjs";
+
+import { authorsRouteur } from "./routes/authors.mjs";
+
+import { categorysRouteur } from "./routes/categorys.mjs";
+
 import { sequelize, initDb } from "./db/sequelize.mjs";
 
 import { loginRouteur } from "./routes/login.mjs";

@@ -29,7 +29,7 @@ const sequelize = new Sequelize("db_ouvrage", "root", "root", {
 const Author = AuthorModel(sequelize, DataTypes);
 const Book = BooksModel(sequelize, DataTypes);
 const Editor = EditorModel(sequelize, DataTypes);
-const Comments = CommentModel(sequelize, DataTypes);
+const Comment = CommentModel(sequelize, DataTypes);
 const Category = CategoryModel(sequelize, DataTypes);
 const User = UserModel(sequelize, DataTypes);
 
@@ -109,4 +109,4 @@ const importEditors = () => {
   });
 };
 
-export { sequelize, initDb, Author, User, Book, Editor };
+export { sequelize, initDb, Author, User, Book, Editor, Comment };
