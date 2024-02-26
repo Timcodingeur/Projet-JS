@@ -6,7 +6,7 @@ export let editors = [
   },
   {
     id: 2,
-    nameEdit: "Shūeisha",
+    nameEdit: "kana",
     created: new Date(),
   },
   {

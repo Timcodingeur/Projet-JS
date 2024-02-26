@@ -7,8 +7,8 @@ import { auth } from "../auth/auth.mjs";
 const commentsRouter = express();
 
 commentsRouter.get("/", auth, (req, res) => {
-  if (req.query.name) {
-    if (req.query.name.length < 2) {
+  if (req.query.comment) {
+    if (req.query.comment.length < 2) {
       const message = `Le terme de la recherche doit contenir au moins 2 caractères`;
       return res.status(400).json({ message });
     }
@@ -17,7 +17,7 @@ commentsRouter.get("/", auth, (req, res) => {
       limit = parseInt(req.query.limit, 10);
     }
     return Comment.findAll({
-      where: { note: { [Op.like]: `%${req.query.name}%` } },
+      where: { note: { [Op.like]: `%${req.query.comment}%` } },
       order: ["note"],
       limit: limit,
     }).then((comments) => {
@@ -25,8 +25,8 @@ commentsRouter.get("/", auth, (req, res) => {
       res.json(sucess(message, comments));
     });
   }
-  Comment.findAll({ order: ["name"] })
-    .then((products) => {
+  Comment.findAll({ order: ["id"] })
+    .then((comments) => {
       const message = "La liste des commentaire a bien été récupérée. ";
       res.json(sucess(message, comments));
     })
@@ -58,7 +58,7 @@ commentsRouter.get("/:id", auth, (req, res) => {
 commentsRouter.post("/", auth, (req, res) => {
   Comment.create(req.body)
     .then((createdComment) => {
-      const message = `Le produit ${createdComment.name} a bien été crée !`;
+      const message = `Le produit ${createdComment.comment} a bien été crée !`;
       res.json(sucess(message, createdComment));
     })
     .catch((error) => {
@@ -92,7 +92,7 @@ commentsRouter.put("/:id", auth, (req, res) => {
     });
 });
 
-CommentsRouter.delete("/:id", auth, (req, res) => {
+commentsRouter.delete("/:id", auth, (req, res) => {
   Comment.findByPk(req.params.id)
     .then((deleteComment) => {
       if (deleteComment == null) {

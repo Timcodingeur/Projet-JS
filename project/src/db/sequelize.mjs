@@ -109,4 +109,4 @@ const importEditors = () => {
   });
 };
 
-export { sequelize, initDb, Author, User, Book, Editor, Comment };
+export { sequelize, initDb, Author, User, Book, Editor, Comment, Category };
