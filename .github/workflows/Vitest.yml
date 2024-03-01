@@ -2,13 +2,14 @@ name: Launch The Vitest Test
 run-name: ${{ github.actor }} test the project code
 on: [push]
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Clone le projet P_295 
-      run: git clone https://github.com/Timcodingeur/Projet-JS.git
-    - name: Installe les dépendances
-      run: npm install
-    - name: Run les tests
-      run: npm run test
-    - name: Message de confirmation
-      run: echo "Tout vas bien"
+  Test-Code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone le projet P_295 
+        run: git clone https://github.com/Timcodingeur/Projet-JS.git
+      - name: Installe les dépendances
+        run: npm install
+      - name: Run les tests
+        run: npm run test
+      - name: Message de confirmation
+        run: echo "Tout vas bien"
