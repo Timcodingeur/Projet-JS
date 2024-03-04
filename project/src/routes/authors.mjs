@@ -4,9 +4,9 @@ import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
 
-const authorRouter = express();
+const authorsRouter = express();
 
-authorRouter.get("/", auth, (req, res) => {
+authorsRouter.get("/", auth, (req, res) => {
   if (req.query.lastname) {
     if (req.query.lastname.length < 2) {
       const message = `Le terme de la recherche doit contenir au moins 2 caractères`;
@@ -37,7 +37,7 @@ authorRouter.get("/", auth, (req, res) => {
     });
 });
 
-authorRouter.get("/:id", auth, (req, res) => {
+authorsRouter.get("/:id", auth, (req, res) => {
   Author.findByPk(req.params.id)
     .then((author) => {
       if (author === null) {
@@ -55,7 +55,7 @@ authorRouter.get("/:id", auth, (req, res) => {
     });
 });
 
-authorRouter.post("/", auth, (req, res) => {
+authorsRouter.post("/", auth, (req, res) => {
   Author.create(req.body)
     .then((createdAuthor) => {
       const message = `L'auteur' ${createdAuthor.lastname} a bien été crée !`;
@@ -71,7 +71,7 @@ authorRouter.post("/", auth, (req, res) => {
     });
 });
 
-authorRouter.put("/:id", auth, (req, res) => {
+authorsRouter.put("/:id", auth, (req, res) => {
   const authorId = req.params.id;
   Author.update(req.body, { where: { id: authorId } })
     .then((_) => {
@@ -92,7 +92,7 @@ authorRouter.put("/:id", auth, (req, res) => {
     });
 });
 
-authorRouter.delete("/:id", auth, (req, res) => {
+authorsRouter.delete("/:id", auth, (req, res) => {
   Author.findByPk(req.params.id)
     .then((deleteAuthor) => {
       if (deleteAuthor == null) {
@@ -114,4 +114,4 @@ authorRouter.delete("/:id", auth, (req, res) => {
     });
 });
 
-export { authorRouter };
+export { authorsRouter };

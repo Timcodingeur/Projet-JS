@@ -7,14 +7,10 @@ export const EditorModel = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      Name: {
+      nameEdit: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          is: {
-            args: /^[A-Za-z\s]*$/,
-            msg: "Seules les lettres et les espaces sont autorisées",
-          },
           notEmpty: {
             msg: "Le nom ne peut pas être vide.",
           },

@@ -25,10 +25,7 @@ export const UserModel = (sequelize, DataTypes) => {
     firstname: {
       type: DataTypes.STRING,
       allowNull: false,
-      is: {
-        args: /^[A-Za-z\s]*$/,
-        msg: "Seules les lettres et les espaces sont autorisées",
-      },
+
       notEmpty: {
         msg: "Le prénom ne peut pas être vide.",
       },
@@ -40,10 +37,6 @@ export const UserModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: {
-          args: /^[A-Za-z\s]*$/,
-          msg: "Seules les lettres et les espaces sont autorisées",
-        },
         notEmpty: {
           msg: "Le nom de famille ne peut pas être vide.",
         },

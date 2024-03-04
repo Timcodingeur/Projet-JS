@@ -40,6 +40,7 @@ let initDb = () => {
     importCategorys();
     importComments();
     importEditors();
+
     importUsers();
     console.log("La base de données db_ouvrage a bien été synchronisée");
   });
@@ -50,23 +51,20 @@ const importAuthor = () => {
     Author.create({
       lastname: author.lastname,
       firstname: author.firstname,
-    }).then((_) => console.log(author.toJSON()));
+    }).then((author) => console.log(author.toJSON()));
   });
 };
 
 const importUsers = () => {
   users.map((user) => {
-    bcrypt
-      .hash(user.password, 10)
-      .then((hash) => {
-        User.create({
-          username: user.username,
-          password: hash,
-          firstname: user.firstname,
-          lastname: user.lastname,
-        });
-      })
-      .then((_) => console.log(user.toJSON()));
+    bcrypt.hash(user.password, 10).then((hash) => {
+      User.create({
+        username: user.username,
+        password: hash,
+        firstname: user.firstname,
+        lastname: user.lastname,
+      }).then((user) => console.log(user.toJSON()));
+    });
   });
 };
 
@@ -79,7 +77,7 @@ const importBooks = () => {
       editor: book.editor,
       image: book.image,
       resume: book.resume,
-    }).then((_) => console.log(book.toJSON()));
+    }).then((book) => console.log(book.toJSON()));
   });
 };
 
@@ -88,24 +86,24 @@ const importCategorys = () => {
     Category.create({
       name: category.name,
       description: category.description,
-    }).then((_) => console.log(category.toJSON()));
+    }).then((category) => console.log(category.toJSON()));
   });
 };
 
 const importComments = () => {
   comments.map((comment) => {
-    Comments.create({
+    Comment.create({
       comment: comment.comment,
       note: comment.note,
-    }).then((_) => console.log(comment.toJSON()));
+    }).then((comment) => console.log(comment.toJSON()));
   });
 };
 
 const importEditors = () => {
   editors.map((editor) => {
     Editor.create({
-      name: editor.nameEdit,
-    }).then((_) => console.log(editor.toJSON()));
+      nameEdit: editor.nameEdit,
+    }).then((editor) => console.log(editor.toJSON()));
   });
 };
 

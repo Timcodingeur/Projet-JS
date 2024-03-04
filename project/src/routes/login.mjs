@@ -1,13 +1,12 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
 import { User } from "../db/sequelize.mjs";
 import { privateKey } from "../auth/private_key.mjs";
 
-const loginRouteur = express();
+const loginRouter = express();
 
-loginRouteur.post("/", (req, res) => {
+loginRouter.post("/", (req, res) => {
   User.findOne({ where: { username: req.body.username } }).then((user) => {
     if (!user) {
       const message = `L'utilisateur demandé n'existe pas`;
@@ -28,4 +27,4 @@ loginRouteur.post("/", (req, res) => {
   });
 });
 
-export { loginRouteur };
+export { loginRouter };

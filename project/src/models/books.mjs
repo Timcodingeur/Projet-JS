@@ -14,10 +14,6 @@ export const BooksModel = (sequelize, DataTypes) => {
           msg: "Ce nom est déjà pris.",
         },
         validate: {
-          is: {
-            args: /^[A-Za-z\s]*$/,
-            msg: "Seules les lettres et les espaces sont autorisées",
-          },
           notEmpty: {
             msg: "Le nom ne peut pas être vide.",
           },
@@ -68,7 +64,7 @@ export const BooksModel = (sequelize, DataTypes) => {
       },
       image: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
         validate: {
           notEmpty: {
             msg: "L'image ne peut pas être vide",

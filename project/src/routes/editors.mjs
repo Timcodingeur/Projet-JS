@@ -4,9 +4,9 @@ import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
 
-const editorRouter = express();
+const editorsRouter = express();
 
-editorRouter.get("/", auth, (req, res) => {
+editorsRouter.get("/", auth, (req, res) => {
   if (req.query.nameEdit) {
     if (req.query.nameEdit.length < 2) {
       const message = `Le terme de la recherche doit contenir au moins 2 caractères`;
@@ -37,7 +37,7 @@ editorRouter.get("/", auth, (req, res) => {
     });
 });
 
-editorRouter.get("/:id", auth, (req, res) => {
+editorsRouter.get("/:id", auth, (req, res) => {
   editor
     .findByPk(req.params.id)
     .then((editor) => {
@@ -56,7 +56,7 @@ editorRouter.get("/:id", auth, (req, res) => {
     });
 });
 
-editorRouter.post("/", auth, (req, res) => {
+editorsRouter.post("/", auth, (req, res) => {
   Editor.create(req.body)
     .then((createdEditor) => {
       const message = `L' éditeur ${createdEditor.nameEdit} a bien été crée !`;
@@ -72,7 +72,7 @@ editorRouter.post("/", auth, (req, res) => {
     });
 });
 
-editorRouter.put("/:id", auth, (req, res) => {
+editorsRouter.put("/:id", auth, (req, res) => {
   const editorId = req.params.id;
   Editor.update(req.body, { where: { id: editorId } })
     .then((_) => {
@@ -93,7 +93,7 @@ editorRouter.put("/:id", auth, (req, res) => {
     });
 });
 
-editorRouter.delete("/:id", auth, (req, res) => {
+editorsRouter.delete("/:id", auth, (req, res) => {
   Editor.findByPk(req.params.id)
     .then((deleteEditor) => {
       if (deleteEditor == null) {
@@ -115,4 +115,4 @@ editorRouter.delete("/:id", auth, (req, res) => {
     });
 });
 
-export { editorRouter };
+export { editorsRouter };

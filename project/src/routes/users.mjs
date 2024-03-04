@@ -4,9 +4,9 @@ import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
 
-const userRouter = express();
+const usersRouter = express();
 
-userRouter.get("/", auth, (req, res) => {
+usersRouter.get("/", auth, (req, res) => {
   if (req.query.name) {
     if (req.query.name.length < 4) {
       const message = `Le terme de la recherche doit contenir au moins 4 caractères`;
@@ -37,7 +37,7 @@ userRouter.get("/", auth, (req, res) => {
     });
 });
 
-userRouter.get("/:id", auth, (req, res) => {
+usersRouter.get("/:id", auth, (req, res) => {
   User.findByPk(req.params.id)
     .then((Users) => {
       if (Users === null) {
@@ -55,7 +55,7 @@ userRouter.get("/:id", auth, (req, res) => {
     });
 });
 
-userRouter.post("/", auth, (req, res) => {
+usersRouter.post("/", auth, (req, res) => {
   User.create(req.body)
     .then((createdUser) => {
       const message = `Le produit ${createdUser.username} a bien été crée !`;
@@ -71,7 +71,7 @@ userRouter.post("/", auth, (req, res) => {
     });
 });
 
-userRouter.put("/:id", auth, (req, res) => {
+usersRouter.put("/:id", auth, (req, res) => {
   const BookId = req.params.id;
   User.update(req.body, { where: { id: BookId } })
     .then((_) => {
@@ -92,7 +92,7 @@ userRouter.put("/:id", auth, (req, res) => {
     });
 });
 
-userRouter.delete("/:id", auth, (req, res) => {
+usersRouter.delete("/:id", auth, (req, res) => {
   User.findByPk(req.params.id)
     .then((deleteUser) => {
       if (deleteUser == null) {
@@ -114,4 +114,4 @@ userRouter.delete("/:id", auth, (req, res) => {
     });
 });
 
-export { userRouter };
+export { usersRouter };

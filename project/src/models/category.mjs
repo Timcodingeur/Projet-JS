@@ -14,10 +14,6 @@ export const CategoryModel = (sequelize, DataTypes) => {
           msg: "Ce nom est déjà pris.",
         },
         validate: {
-          is: {
-            args: /^[A-Za-z\s]*$/,
-            msg: "Seules les lettres et les espaces sont autorisées",
-          },
           notEmpty: {
             msg: "Le nom ne peut pas être vide.",
           },

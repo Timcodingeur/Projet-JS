@@ -1,22 +1,20 @@
 import express from "express";
 
-import { productsRouter } from "./routes/products.mjs";
-
 import { booksRouter } from "./routes/books.mjs";
 
-import { commentsRouteur } from "./routes/comments.mjs";
+import { commentsRouter } from "./routes/comments.mjs";
 
-import { editorsRouteur } from "./routes/editor.mjs";
+import { editorsRouter } from "./routes/editors.mjs";
 
-import { usersRouteur } from "./routes/users.mjs";
+import { usersRouter } from "./routes/users.mjs";
 
-import { authorsRouteur } from "./routes/authors.mjs";
+import { authorsRouter } from "./routes/authors.mjs";
 
-import { categorysRouteur } from "./routes/categorys.mjs";
+import { categorysRouter } from "./routes/categorys.mjs";
 
 import { sequelize, initDb } from "./db/sequelize.mjs";
 
-import { loginRouteur } from "./routes/login.mjs";
+import { loginRouter } from "./routes/login.mjs";
 
 import swaggerUi from "swagger-ui-express";
 
@@ -53,15 +51,15 @@ app.get("/", (req, res) => {
 
 app.use("/api/books", booksRouter);
 
-app.use("/api/comments", commentsRouteur);
+app.use("/api/comments", commentsRouter);
 
-app.use("/api/editors", editorsRouteur);
+app.use("/api/editors", editorsRouter);
 
-app.use("/api/users", usersRouteur);
+app.use("/api/users", usersRouter);
 
-app.use("/api/authors", authorsRouteur);
+app.use("/api/authors", authorsRouter);
 
-app.use("/api/categorys", categorysRouteur);
+app.use("/api/categorys", categorysRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

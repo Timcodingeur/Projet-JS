@@ -4,9 +4,9 @@ import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
 
-const categoryRouter = express();
+const categorysRouter = express();
 
-categoryRouter.get("/", auth, (req, res) => {
+categorysRouter.get("/", auth, (req, res) => {
   if (req.query.name) {
     if (req.query.name.length < 4) {
       const message = `Le terme de la recherche doit contenir au moins 4 caractères`;
@@ -37,7 +37,7 @@ categoryRouter.get("/", auth, (req, res) => {
     });
 });
 
-categoryRouter.get("/:id", auth, (req, res) => {
+categorysRouter.get("/:id", auth, (req, res) => {
   Category.findByPk(req.params.id)
     .then((Category) => {
       if (Category === null) {
@@ -55,7 +55,7 @@ categoryRouter.get("/:id", auth, (req, res) => {
     });
 });
 
-categoryRouter.post("/", auth, (req, res) => {
+categorysRouter.post("/", auth, (req, res) => {
   Category.create(req.body)
     .then((createdCategory) => {
       const message = `Le produit ${createdCategory.name} a bien été crée !`;
@@ -71,7 +71,7 @@ categoryRouter.post("/", auth, (req, res) => {
     });
 });
 
-categoryRouter.put("/:id", auth, (req, res) => {
+categorysRouter.put("/:id", auth, (req, res) => {
   const BookId = req.params.id;
   Category.update(req.body, { where: { id: BookId } })
     .then((_) => {
@@ -92,7 +92,7 @@ categoryRouter.put("/:id", auth, (req, res) => {
     });
 });
 
-categoryRouter.delete("/:id", auth, (req, res) => {
+categorysRouter.delete("/:id", auth, (req, res) => {
   Category.findByPk(req.params.id)
     .then((deleteCategory) => {
       if (deleteCategory == null) {
@@ -114,4 +114,4 @@ categoryRouter.delete("/:id", auth, (req, res) => {
     });
 });
 
-export { categoryRouter };
+export { categorysRouter };
