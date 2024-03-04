@@ -10,7 +10,7 @@ jobs:
       - name: Clone le projet P_295 
         run: git clone https://github.com/Timcodingeur/Projet-JS.git
       - name: Installe les dépendances
-        run: npm install --prefix ../project/package.json
+        run: npm install --prefix ../project
       - name: Run les tests
         run: npm run test
       - name: Message de confirmation
