@@ -9,6 +9,7 @@ jobs:
       - uses: actions/setup-node@v4
       - name: Clone le projet P_295 
         run: git clone https://github.com/Timcodingeur/Projet-JS.git
+      - run: cd project
       - run: ls
       - name: Installe les dépendances
         run: npm install --prefix /usr/bin/bash/Projet-JS/project/
