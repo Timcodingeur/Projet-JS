@@ -12,7 +12,7 @@ jobs:
       - name: Run the container
         run: docker run --name mysql1 -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=homedb -p 3306:3306 -d mysql/mysql-server:5.7
       - name: Access the container
-        run: docke exec -i mysql1 -uroot -proot
+        run: docker exec -i mysql1 -uroot -proot
       - name: Clone le projet P_295 
         run: git clone https://github.com/Timcodingeur/Projet-JS.git
       - name: Installe les dépendances
