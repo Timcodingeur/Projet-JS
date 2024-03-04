@@ -12,6 +12,6 @@ jobs:
       - name: Installe les dépendances
         run: npm install --prefix ./project/
       - name: Run les tests
-        run: npm run test
+        run: npm --prefix ./project/ run test
       - name: Message de confirmation
         run: echo "Tout vas biene"
