@@ -5,7 +5,8 @@
   "description": "Premier Programme",
   "main": "src/app.mjs",
   "scripts": {
-    "start": "nodemon src/app.mjs"
+    "start": "nodemon src/app.mjs",
+    "test": "vitest"
   },
   "author": "Luke Moia",
   "license": "ISC",
