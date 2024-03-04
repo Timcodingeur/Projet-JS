@@ -11,6 +11,8 @@ jobs:
         run: git clone https://github.com/Timcodingeur/Projet-JS.git
       - name: Installe les dépendances
         run: npm install --prefix ./project/
+      - name: Run le serveur
+        run: npm --prefix ./project/ run start
       - name: Run les tests
         run: npm --prefix ./project/ run test
       - name: Message de confirmation
