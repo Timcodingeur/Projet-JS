@@ -9,6 +9,8 @@ jobs:
       - uses: actions/setup-node@v4
       - name: Clone le projet P_295 
         run: git clone https://github.com/Timcodingeur/Projet-JS.git
+      - name: Se mettre dans le bon dossier
+        run: cd project
       - name: Installe les dépendances
         run: npm install
       - name: Run les tests
