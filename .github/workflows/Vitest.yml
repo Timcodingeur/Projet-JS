@@ -7,10 +7,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: "8.0"
       - uses: docker-practice/actions-setup-docker@master
         timeout-minutes: 12
       - name: Run the container
-        run: (docker run --name mysql1 -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=homedb -p 3306:3306 -d mysql/mysql-server:5.7) || (docker exec -i mysql1 -u root -proot)
+        run: (docker run --name mysql1 -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=homedb -p 3306:3306 -d mysql/mysql-server:5.7) || (docker exec -i mysql1 -u root -proot -e 'CREATE DATABASE IF NOT EXISTS db_ouvrages')
       - name: Clone le projet P_295 
         run: git clone https://github.com/Timcodingeur/Projet-JS.git
       - name: Installe les dépendances
