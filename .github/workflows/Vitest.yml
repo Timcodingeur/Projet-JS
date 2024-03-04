@@ -9,12 +9,6 @@ jobs:
       - uses: actions/setup-node@v4
       - uses: docker-practice/actions-setup-docker@master
         timeout-minutes: 12
-      - run: |
-          set -x
-
-          docker vesion
-
-          docker run --rm mysql
       - name: Clone le projet P_295 
         run: git clone https://github.com/Timcodingeur/Projet-JS.git
       - name: Installe les dépendances
