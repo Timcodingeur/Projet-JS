@@ -6,6 +6,39 @@ import { auth } from "../auth/auth.mjs";
 
 const categorysRouter = express();
 
+/**
+ * @swagger
+ * /api/categorys/:
+ *  get:
+ *    tags: [Categorys]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve all categories.
+ *    description: Retrieve all categories. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: All categories
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The category ID.
+ *                      example: 1
+ *                    name:
+ *                      type: string
+ *                      description: The category's name
+ *                      example: shōnen
+ *                    description:
+ *                      type: string
+ *                      description: The category's description
+ *                      example: Le shōnen manga (少年漫画?, litt. « bande dessinée pour jeune garçon ») est une ligne éditoriale de manga qui vise un public composé d'adolescents, allant des dernières années de l'école primaire (environ 10-12 ans) jusqu'aux lycéens (environ 15-18 ans). Il est souvent opposé au shōjo manga (少女漫画?) qui se veut être une ligne éditoriale pour un public féminin du même âge
+ */
 categorysRouter.get("/", auth, (req, res) => {
   if (req.query.name) {
     if (req.query.name.length < 4) {
@@ -21,36 +54,69 @@ categorysRouter.get("/", auth, (req, res) => {
       order: ["name"],
       limit: limit,
     }).then((Category) => {
-      const message = `Il y a ${Category.count} produit qui correspondant au treme de la recherche`;
+      const message = `Il y a ${Category.count} categorie qui correspondant au thème de la recherche`;
       res.json(sucess(message, Category));
     });
   }
   Category.findAll({ order: ["name"] })
     .then((Category) => {
-      const message = "La liste des produits a bien été récupérée. ";
+      const message = "La liste des categorie a bien été récupérée. ";
       res.json(sucess(message, Category));
     })
     .catch((error) => {
       const message =
-        "La liste des produits n'a pas été récupérée. Merci de réessayer dans quelque instants.";
+        "La liste des categorie n'a pas été récupérée. Merci de réessayer dans quelque instants.";
       res.status(500).json({ message, data: error });
     });
 });
 
+/**
+ * @swagger
+ * /api/categorys/:id:
+ *  get:
+ *    tags: [Categorys]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve one category.
+ *    description: Retrieve one category. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: One Category
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The category ID.
+ *                      example: 1
+ *                    name:
+ *                      type: string
+ *                      description: The category's name
+ *                      example: shōnen
+ *                    description:
+ *                      type: string
+ *                      description: The category's description
+ *                      example: Le shōnen manga (少年漫画?, litt. « bande dessinée pour jeune garçon ») est une ligne éditoriale de manga qui vise un public composé d'adolescents, allant des dernières années de l'école primaire (environ 10-12 ans) jusqu'aux lycéens (environ 15-18 ans). Il est souvent opposé au shōjo manga (少女漫画?) qui se veut être une ligne éditoriale pour un public féminin du même âge
+ */
 categorysRouter.get("/:id", auth, (req, res) => {
   Category.findByPk(req.params.id)
     .then((Category) => {
       if (Category === null) {
         const message =
-          "Le produit demandé n'existe pas. Merci de réessayer avec une autre identifiant.";
+          "Le categorie demandé n'existe pas. Merci de réessayer avec une autre identifiant.";
         return res.status(404).json({ message });
       }
-      const message = `Le produit dont l'id vaut ${Category.id} a bien été récupérée`;
+      const message = `Le categorie dont l'id vaut ${Category.id} a bien été récupérée`;
       res.json(sucess(message, Category));
     })
     .catch((error) => {
       const message =
-        "Le produit n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
+        "Le categorie n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });
@@ -72,7 +138,7 @@ categorysRouter.get("/:id/book", auth, async (req, res) => {
 categorysRouter.post("/", auth, (req, res) => {
   Category.create(req.body)
     .then((createdCategory) => {
-      const message = `Le produit ${createdCategory.name} a bien été crée !`;
+      const message = `Le categorie ${createdCategory.name} a bien été crée !`;
       res.json(sucess(message, createdCategory));
     })
     .catch((error) => {
@@ -80,7 +146,7 @@ categorysRouter.post("/", auth, (req, res) => {
         return res.status(400).json({ message: error.message, data: error });
       }
       const message =
-        "Le produit n'a pas pu être ajouté. Merci de réessayer dans quelques instants.";
+        "Le categorie n'a pas pu être ajouté. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });
@@ -92,16 +158,16 @@ categorysRouter.put("/:id", auth, (req, res) => {
       return Category.findByPk(BookId).then((updateCategory) => {
         if (updateCategory === null) {
           const message =
-            "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
+            "Le categorie demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
           return res.status(404).json({ message });
         }
-        const message = `Le produit ${updateCategory.name} a bien été modifié`;
+        const message = `Le categorie ${updateCategory.name} a bien été modifié`;
         res.json(sucess(message, updateCategory));
       });
     })
     .catch((error) => {
       const message =
-        "Le produit n'a pas pu être mis à jour. Merci de réessayer dans quelques instants.";
+        "Le categorie n'a pas pu être mis à jour. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });
@@ -111,19 +177,19 @@ categorysRouter.delete("/:id", auth, (req, res) => {
     .then((deleteCategory) => {
       if (deleteCategory == null) {
         const message =
-          "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant";
+          "Le categorie demandé n'existe pas. Merci de réessayer avec un autre identifiant";
         return res.status(404).json({ message });
       }
       return Category.destroy({
         where: { id: deleteCategory.id },
       }).then((_) => {
-        const message = `Le produit ${deleteCategory.name} a bien été supprimé`;
+        const message = `Le categorie ${deleteCategory.name} a bien été supprimé`;
         res.json(sucess(message, deleteCategory));
       });
     })
     .catch((error) => {
       const message =
-        "Le produit n'a pas pu être supprimé. Merci de réessayer dans quelques instants.";
+        "Le categorie n'a pas pu être supprimé. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });

@@ -213,15 +213,15 @@ Book.associate = () => {
 /**
  * @swagger
  * /api/books/:
- * post:
+ *  post:
  *    tags: [Books]
  *    security :
  *      - bearerAuth: []
- *    summary: Add one book.
- *    description: Add one book.
+ *    summary: Add a book.
+ *    description: Add a book.
  *    responses:
  *      200:
- *        description: One book
+ *        description: One book.
  *        content:
  *          application/json:
  *            schema:
