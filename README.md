@@ -72,3 +72,11 @@ Le projet "Passion Lecture" est développé selon les exigences suivantes :
 * Fonctionnalités : Gestion des livres, catégories, utilisateurs, authentification JWT, documentation Swagger, tests automatiques, et "dockerisation" (optionnel).
 * Technologies : Utilisation de Node.js, Express.js, Sequelize, MySQL, et Swagger.
 * Travail d'équipe : Projet réalisé par notre groupe de 5, avec une gestion collaborative via GitHub.
+
+ ## Interface
+
+<img src="https://github.com/Timcodingeur/Projet-JS/blob/main/Maquettes/Menu.png" alt="Collection" height="500">
+
+<img src="https://github.com/Timcodingeur/Projet-JS/blob/main/Maquettes/Collection.png" alt="Collection" height="500">
+
+<img src="https://github.com/Timcodingeur/Projet-JS/blob/main/Maquettes/Livre.png" alt="Collection" height="500">
