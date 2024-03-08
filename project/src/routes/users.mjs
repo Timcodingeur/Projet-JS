@@ -21,18 +21,18 @@ usersRouter.get("/", auth, (req, res) => {
       order: ["username"],
       limit: limit,
     }).then((Users) => {
-      const message = `Il y a ${Users.count} produit qui correspondant au treme de la recherche`;
+      const message = `Il y a ${Users.count} utilisateur qui correspondant au treme de la recherche`;
       res.json(sucess(message, Users));
     });
   }
   User.findAll({ order: ["username"] })
     .then((Users) => {
-      const message = "La liste des produits a bien été récupérée. ";
+      const message = "La liste des utilisateurs a bien été récupérée. ";
       res.json(sucess(message, Users));
     })
     .catch((error) => {
       const message =
-        "La liste des produits n'a pas été récupérée. Merci de réessayer dans quelque instants.";
+        "La liste des utilisateurs n'a pas été récupérée. Merci de réessayer dans quelque instants.";
       res.status(500).json({ message, data: error });
     });
 });
@@ -42,7 +42,7 @@ usersRouter.get("/:id", auth, (req, res) => {
     .then((Users) => {
       if (Users === null) {
         const message =
-          "Le produit demandé n'existe pas. Merci de réessayer avec une autre identifiant.";
+          "Le utilisateur demandé n'existe pas. Merci de réessayer avec une autre identifiant.";
         return res.status(404).json({ message });
       }
       const message = `L'utilisateur' dont l'id vaut ${Users.id} a bien été récupérée`;
@@ -50,7 +50,7 @@ usersRouter.get("/:id", auth, (req, res) => {
     })
     .catch((error) => {
       const message =
-        "Le produit n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
+        "Le utilisateur n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });
@@ -58,7 +58,7 @@ usersRouter.get("/:id", auth, (req, res) => {
 usersRouter.post("/", auth, (req, res) => {
   User.create(req.body)
     .then((createdUser) => {
-      const message = `Le produit ${createdUser.username} a bien été crée !`;
+      const message = `Le utilisateur ${createdUser.username} a bien été crée !`;
       res.json(sucess(message, createdUser));
     })
     .catch((error) => {
@@ -66,7 +66,7 @@ usersRouter.post("/", auth, (req, res) => {
         return res.status(400).json({ message: error.message, data: error });
       }
       const message =
-        "Le produit n'a pas pu être ajouté. Merci de réessayer dans quelques instants.";
+        "Le utilisateur n'a pas pu être ajouté. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });
@@ -78,16 +78,16 @@ usersRouter.put("/:id", auth, (req, res) => {
       return User.findByPk(UserId).then((updateUser) => {
         if (updateUser === null) {
           const message =
-            "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
+            "Le utilisateur demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
           return res.status(404).json({ message });
         }
-        const message = `Le produit ${updateUser.username} a bien été modifié`;
+        const message = `Le utilisateur ${updateUser.username} a bien été modifié`;
         res.json(sucess(message, updateUser));
       });
     })
     .catch((error) => {
       const message =
-        "Le produit n'a pas pu être mis à jour. Merci de réessayer dans quelques instants.";
+        "Le utilisateur n'a pas pu être mis à jour. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });
@@ -97,19 +97,19 @@ usersRouter.delete("/:id", auth, (req, res) => {
     .then((deleteUser) => {
       if (deleteUser == null) {
         const message =
-          "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant";
+          "Le utilisateur demandé n'existe pas. Merci de réessayer avec un autre identifiant";
         return res.status(404).json({ message });
       }
       return User.destroy({
         where: { id: deleteUser.id },
       }).then((_) => {
-        const message = `Le produit ${deleteUser.username} a bien été supprimé`;
+        const message = `Le utilisateur ${deleteUser.username} a bien été supprimé`;
         res.json(sucess(message, deleteUser));
       });
     })
     .catch((error) => {
       const message =
-        "Le produit n'a pas pu être supprimé. Merci de réessayer dans quelques instants.";
+        "Le utilisateur n'a pas pu être supprimé. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
 });

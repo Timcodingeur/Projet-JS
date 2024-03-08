@@ -6,6 +6,35 @@ import { auth } from "../auth/auth.mjs";
 
 const editorsRouter = express();
 
+/**
+ * @swagger
+ * /api/editors/:
+ *  get:
+ *    tags: [Edirors]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve all editors.
+ *    description: Retrieve all editorss. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: All editors
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The editor ID.
+ *                      example: 1
+ *                    nameEdit:
+ *                      type: string
+ *                      description: The editor's name
+ *                      example: Kana
+ */
 editorsRouter.get("/", auth, (req, res) => {
   if (req.query.nameEdit) {
     if (req.query.nameEdit.length < 2) {
@@ -37,6 +66,35 @@ editorsRouter.get("/", auth, (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/editors/:id:
+ *  get:
+ *    tags: [Editors]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve one editor.
+ *    description: Retrieve one editor. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: One Editor
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The editor ID.
+ *                      example: 1
+ *                    nameEdit:
+ *                      type: string
+ *                      description: The editor's name
+ *                      example: Kana
+ */
 editorsRouter.get("/:id", auth, (req, res) => {
   Editor.findByPk(req.params.id)
     .then((editor) => {

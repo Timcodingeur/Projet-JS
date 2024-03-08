@@ -1,5 +1,5 @@
 import express from "express";
-import { Category } from "../db/sequelize.mjs";
+import { Category, Book } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
@@ -121,18 +121,20 @@ categorysRouter.get("/:id", auth, (req, res) => {
     });
 });
 
+// Cette route permet de récupérer tous les livres de la catégorie ayant pour id
 categorysRouter.get("/:id/book", auth, async (req, res) => {
-  const category = await Category.findByPk(req.params.id, {
+  console.log(req.params.id);
+  const categor = Category.findByPk(req.params.id);
+  const category = await Book.findByPk(req.params.id, {
     include: [
       {
-        model: book,
-        as: "books",
+        category: req.params.id,
       },
     ],
   });
 
-  const message = `Categorie du livre ${category.name}`;
-  res.json({ message, data: category.book });
+  const message = `Categorie du livre ${categor}`;
+  res.json({ message, data: category });
 });
 
 categorysRouter.post("/", auth, (req, res) => {

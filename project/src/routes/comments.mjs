@@ -6,6 +6,47 @@ import { auth } from "../auth/auth.mjs";
 
 const commentsRouter = express();
 
+/**
+ * @swagger
+ * /api/comments/:
+ *  get:
+ *    tags: [Comments]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve all comments.
+ *    description: Retrieve all comments. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: All comments
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The comment ID.
+ *                      example: 1
+ *                    comment:
+ *                      type: string
+ *                      description: The comment's comment
+ *                      example: Cool
+ *                    note:
+ *                      type: integer
+ *                      description: The comment's grade
+ *                      example: 5
+ *                    book:
+ *                      type: integer
+ *                      description: The comment's book ID.
+ *                      example: 2
+ *                    user:
+ *                      type: integer
+ *                      description: The comment's user ID.
+ *                      example: 2
+ */
 commentsRouter.get("/", auth, (req, res) => {
   if (req.query.comment) {
     if (req.query.comment.length < 2) {

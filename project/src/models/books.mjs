@@ -1,5 +1,5 @@
 export const BooksModel = (sequelize, DataTypes) => {
-  return sequelize.define(
+  const Book = sequelize.define(
     "Books",
     {
       id: {
@@ -90,4 +90,11 @@ export const BooksModel = (sequelize, DataTypes) => {
       updateAt: false,
     }
   );
+
+  Book.associate = () => {
+    Book.hasmany(note, { foreignKey: "note" });
+    Book.hasmany(comment, { foreignKey: "comment" });
+  };
+
+  return Book;
 };
