@@ -6,6 +6,40 @@ import { auth } from "../auth/auth.mjs";
 
 const authorsRouter = express();
 
+/**
+ * @swagger
+ * /api/products/:
+ *  get:
+ *    tags: [Authors]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve all authors.
+ *    description: Retrieve all authors. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: All authors
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The author ID.
+ *                      example: 1
+ *                    firstname:
+ *                      type: string
+ *                      description: The author's firstname
+ *                      example: Jules
+ *                    lastname:
+ *                      type: string
+ *                      description: The author's lastname
+ *                      example: Verne
+ */
+
 authorsRouter.get("/", auth, (req, res) => {
   if (req.query.lastname) {
     if (req.query.lastname.length < 2) {
@@ -37,6 +71,39 @@ authorsRouter.get("/", auth, (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/products/:id:
+ *  get:
+ *    tags: [Authors]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve one authors.
+ *    description: Retrieve one authors. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: One Author
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The author ID.
+ *                      example: 1
+ *                    firstname:
+ *                      type: string
+ *                      description: The author's firstname
+ *                      example: Jules
+ *                    lastname:
+ *                      type: number
+ *                      description: The author's lastname
+ *                      example: Verne
+ */
 authorsRouter.get("/:id", auth, (req, res) => {
   Author.findByPk(req.params.id)
     .then((author) => {
@@ -55,6 +122,53 @@ authorsRouter.get("/:id", auth, (req, res) => {
     });
 });
 
+authorsRouter.get("/:id/book", auth, async (req, res) => {
+  const author = await Author.findByPk(req.params.id, {
+    include: [
+      {
+        model: book,
+        as: "books",
+      },
+    ],
+  });
+
+  const message = `L'auteur du livre : ${author.firstname} ${author.lastname}`;
+  res.json({ message, data: author.book });
+});
+
+/**
+ * @swagger
+ * /api/products/:id:
+ *  post:
+ *    tags: [Authors]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Add a author into the db.
+ *    description: Add a author into the db.
+ *    responses:
+ *      200:
+ *        description: One Author.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The author ID.
+ *                      example: 1
+ *                    name:
+ *                      type: string
+ *                      description: The author's firstname
+ *                      example: Jules
+ *                    price:
+ *                      type: number
+ *                      description: The author's lastname
+ *                      example: Verne
+ */
 authorsRouter.post("/", auth, (req, res) => {
   Author.create(req.body)
     .then((createdAuthor) => {
@@ -71,6 +185,19 @@ authorsRouter.post("/", auth, (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/products/:id
+ * put:
+ *  tags: [Authors]
+ *  security:
+ *    - bearerAuth: []
+ *  summary: Change a author.
+ *  description: Change a author. That cahnged also in the database.
+ *  responses:
+ *    200:
+ *
+ */
 authorsRouter.put("/:id", auth, (req, res) => {
   const authorId = req.params.id;
   Author.update(req.body, { where: { id: authorId } })

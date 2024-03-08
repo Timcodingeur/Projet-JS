@@ -11,6 +11,10 @@ export const AuthorModel = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           notEmpty: {
             msg: "Le prénom ne peut pas être vide.",
           },
@@ -23,6 +27,10 @@ export const AuthorModel = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           notEmpty: {
             msg: "Le nom de famille ne peut pas être vide",
           },

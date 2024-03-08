@@ -2,7 +2,7 @@ export const EditorModel = (sequelize, DataTypes) => {
   return sequelize.define(
     "editor",
     {
-      id_editor: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -11,6 +11,10 @@ export const EditorModel = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           notEmpty: {
             msg: "Le nom ne peut pas être vide.",
           },

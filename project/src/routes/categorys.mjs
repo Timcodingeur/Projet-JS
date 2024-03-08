@@ -55,6 +55,20 @@ categorysRouter.get("/:id", auth, (req, res) => {
     });
 });
 
+categorysRouter.get("/:id/book", auth, async (req, res) => {
+  const category = await Category.findByPk(req.params.id, {
+    include: [
+      {
+        model: book,
+        as: "books",
+      },
+    ],
+  });
+
+  const message = `Categorie du livre ${category.name}`;
+  res.json({ message, data: category.book });
+});
+
 categorysRouter.post("/", auth, (req, res) => {
   Category.create(req.body)
     .then((createdCategory) => {

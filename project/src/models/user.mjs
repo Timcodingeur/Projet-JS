@@ -8,6 +8,10 @@ export const UserModel = (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
+      is: {
+        args: /^[^?!]+$/,
+        msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+      },
       unique: {
         msg: "Ce username est déjà pris.",
       },
@@ -37,6 +41,10 @@ export const UserModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
+        is: {
+          args: /^[^?!]+$/,
+          msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+        },
         notEmpty: {
           msg: "Le nom de famille ne peut pas être vide.",
         },

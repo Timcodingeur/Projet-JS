@@ -38,8 +38,7 @@ editorsRouter.get("/", auth, (req, res) => {
 });
 
 editorsRouter.get("/:id", auth, (req, res) => {
-  editor
-    .findByPk(req.params.id)
+  Editor.findByPk(req.params.id)
     .then((editor) => {
       if (editor === null) {
         const message =
@@ -70,6 +69,20 @@ editorsRouter.post("/", auth, (req, res) => {
         "L'éditeur n'a pas pu être ajouté. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
+});
+
+editorsRouter.get("/:id/books", auth, async (req, res) => {
+  const editor = await Editor.findByPk(req.params.id, {
+    include: [
+      {
+        model: book,
+        as: "books",
+      },
+    ],
+  });
+
+  const message = `L'editeur du livre ${editor.nameEdit}`;
+  res.json({ message, data: editor.book });
 });
 
 editorsRouter.put("/:id", auth, (req, res) => {

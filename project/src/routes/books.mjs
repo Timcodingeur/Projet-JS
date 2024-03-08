@@ -6,9 +6,63 @@ import { auth } from "../auth/auth.mjs";
 
 const booksRouter = express();
 
+/**
+ * @swagger
+ * /api/books/:
+ *  get:
+ *    tags: [Books]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve all books.
+ *    description: Retrieve all books. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: All books
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The book ID.
+ *                      example: 1
+ *                    title:
+ *                      type: string
+ *                      description: The book's title.
+ *                      example: OnePiece n°1
+ *                    extrait:
+ *                      type: string
+ *                      description: A extract of the book.
+ *                      example: Je deviendrais le rois des pirate
+ *                    year:
+ *                      type: date
+ *                      format: date-time
+ *                      description: The book's creation date.
+ *                      example: null
+ *                    editor:
+ *                      type: integer
+ *                      description: The book's editor ID.
+ *                      example: 2
+ *                    category:
+ *                      type: integer
+ *                      description: The book's category ID.
+ *                      example: 1
+ *                    image:
+ *                      type: string
+ *                      description: The book's image url.
+ *                      example: https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/OnePiece1.jpg
+ *                    resume:
+ *                      type: string
+ *                      description: The book's resume
+ *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
+ */
 booksRouter.get("/", auth, (req, res) => {
-  if (req.query.name) {
-    if (req.query.name.length < 4) {
+  if (req.query.title) {
+    if (req.query.title.length < 4) {
       const message = `Le terme de la recherche doit contenir au moins 4 caractères`;
       return res.status(400).json({ message });
     }
@@ -17,15 +71,15 @@ booksRouter.get("/", auth, (req, res) => {
       limit = parseInt(req.query.limit, 10);
     }
     return Book.findAll({
-      where: { name: { [Op.like]: `%${req.query.name}%` } },
-      order: ["name"],
+      where: { title: { [Op.like]: `%${req.query.title}%` } },
+      order: ["title"],
       limit: limit,
     }).then((Books) => {
       const message = `Il y a ${Books.count} produit qui correspondant au treme de la recherche`;
       res.json(sucess(message, Books));
     });
   }
-  Book.findAll({ order: ["name"] })
+  Book.findAll({ order: ["title"] })
     .then((Books) => {
       const message = "La liste des produits a bien été récupérée. ";
       res.json(sucess(message, Books));
@@ -37,6 +91,60 @@ booksRouter.get("/", auth, (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/books/:id:
+ *  get:
+ *    tags: [Books]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve one book.
+ *    description: Retrieve one book. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: One book
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The book ID.
+ *                      example: 1
+ *                    title:
+ *                      type: string
+ *                      description: The book's title.
+ *                      example: OnePiece n°1
+ *                    extrait:
+ *                      type: string
+ *                      description: A extract of the book.
+ *                      example: Je deviendrais le rois des pirate
+ *                    year:
+ *                      type: date
+ *                      format: date-time
+ *                      description: The book's creation date.
+ *                      example: null
+ *                    editor:
+ *                      type: integer
+ *                      description: The book's editor ID.
+ *                      example: 2
+ *                    category:
+ *                      type: integer
+ *                      description: The book's category ID.
+ *                      example: 1
+ *                    image:
+ *                      type: string
+ *                      description: The book's image url.
+ *                      example: https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/OnePiece1.jpg
+ *                    resume:
+ *                      type: string
+ *                      description: The book's resume
+ *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
+ */
 booksRouter.get("/:id", auth, (req, res) => {
   Book.findByPk(req.params.id)
     .then((Books) => {
@@ -55,6 +163,107 @@ booksRouter.get("/:id", auth, (req, res) => {
     });
 });
 
+booksRouter.get("/:id/editor", auth, async (req, res) => {
+  const book = await Book.findByPk(req.params.id, {
+    include: [
+      {
+        model: editor,
+        as: "editors",
+      },
+    ],
+  });
+
+  const message = `L'editeur du livre ${book.title}`;
+  res.json({ message, data: book.editor });
+});
+
+booksRouter.get("/:id/category", auth, async (req, res) => {
+  const book = await Book.findByPk(req.params.id, {
+    include: [
+      {
+        model: category,
+        as: "categorys",
+      },
+    ],
+  });
+
+  const message = `La categirue du livre ${book.title}`;
+  res.json({ message, data: book.editor });
+});
+
+booksRouter.get("/:id/author", auth, async (req, res) => {
+  const book = await Book.findByPk(req.params.id, {
+    include: [
+      {
+        model: author,
+        as: "authors",
+      },
+    ],
+  });
+
+  const message = `L'auteur du livre ${book.title}`;
+  res.json({ message, data: book.editor });
+});
+
+Book.associate = () => {
+  Book.hasmany(note, { foreignKey: "note" });
+  Book.hasmany(comment, { foreignKey: "comment" });
+};
+
+/**
+ * @swagger
+ * /api/books/:
+ * post:
+ *    tags: [Books]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Add one book.
+ *    description: Add one book.
+ *    responses:
+ *      200:
+ *        description: One book
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The book ID.
+ *                      example: 1
+ *                    title:
+ *                      type: string
+ *                      description: The book's title.
+ *                      example: OnePiece n°1
+ *                    extrait:
+ *                      type: string
+ *                      description: A extract of the book.
+ *                      example: Je deviendrais le rois des pirate
+ *                    year:
+ *                      type: date
+ *                      format: date-time
+ *                      description: The book's creation date.
+ *                      example: null
+ *                    editor:
+ *                      type: integer
+ *                      description: The book's editor ID.
+ *                      example: 2
+ *                    category:
+ *                      type: integer
+ *                      description: The book's category ID.
+ *                      example: 1
+ *                    image:
+ *                      type: string
+ *                      description: The book's image url.
+ *                      example: https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/OnePiece1.jpg
+ *                    resume:
+ *                      type: string
+ *                      description: The book's resume
+ *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
+ */
 booksRouter.post("/", auth, (req, res) => {
   Book.create(req.body)
     .then((createdBook) => {

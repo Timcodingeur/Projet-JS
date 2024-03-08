@@ -20,4 +20,11 @@ export let categorys = [
       "Le shōjo manga (少女漫画?, litt. « bande dessinée pour fille ») est une catégorie éditoriale du manga, aussi parfois qualifié de « genre », qui cible un public féminin, adolescent ou jeune adulte. Elle est avec le shōnen manga et le seinen manga, l'une des trois principales catégories éditoriales du manga. Le shōjo manga est traditionnellement publié dans des magazines de prépublication de manga dédiés, qui peuvent se spécialiser sur une tranche d'âge du lectorat ou sur un genre narratif.",
     created: new Date(),
   },
+  {
+    id: 4,
+    name: "cadeaudequentin",
+    description:
+      "Le cadeaudequentin est un bon genre, on voie tout et ses très sympa a lire en famille",
+    created: new Date(),
+  },
 ];

@@ -1,5 +1,5 @@
 import express from "express";
-import { Book as User } from "../db/sequelize.mjs";
+import { User } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
@@ -7,8 +7,8 @@ import { auth } from "../auth/auth.mjs";
 const usersRouter = express();
 
 usersRouter.get("/", auth, (req, res) => {
-  if (req.query.name) {
-    if (req.query.name.length < 4) {
+  if (req.query.username) {
+    if (req.query.username.length < 4) {
       const message = `Le terme de la recherche doit contenir au moins 4 caractères`;
       return res.status(400).json({ message });
     }
@@ -17,15 +17,15 @@ usersRouter.get("/", auth, (req, res) => {
       limit = parseInt(req.query.limit, 10);
     }
     return User.findAll({
-      where: { name: { [Op.like]: `%${req.query.name}%` } },
-      order: ["name"],
+      where: { username: { [Op.like]: `%${req.query.username}%` } },
+      order: ["username"],
       limit: limit,
     }).then((Users) => {
       const message = `Il y a ${Users.count} produit qui correspondant au treme de la recherche`;
       res.json(sucess(message, Users));
     });
   }
-  User.findAll({ order: ["name"] })
+  User.findAll({ order: ["username"] })
     .then((Users) => {
       const message = "La liste des produits a bien été récupérée. ";
       res.json(sucess(message, Users));
@@ -45,7 +45,7 @@ usersRouter.get("/:id", auth, (req, res) => {
           "Le produit demandé n'existe pas. Merci de réessayer avec une autre identifiant.";
         return res.status(404).json({ message });
       }
-      const message = `Le produit dont l'id vaut ${Users.id} a bien été récupérée`;
+      const message = `L'utilisateur' dont l'id vaut ${Users.id} a bien été récupérée`;
       res.json(sucess(message, Users));
     })
     .catch((error) => {
@@ -72,10 +72,10 @@ usersRouter.post("/", auth, (req, res) => {
 });
 
 usersRouter.put("/:id", auth, (req, res) => {
-  const BookId = req.params.id;
-  User.update(req.body, { where: { id: BookId } })
+  const UserId = req.params.id;
+  User.update(req.body, { where: { id: UserId } })
     .then((_) => {
-      return User.findByPk(BookId).then((updateUser) => {
+      return User.findByPk(UserId).then((updateUser) => {
         if (updateUser === null) {
           const message =
             "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant.";

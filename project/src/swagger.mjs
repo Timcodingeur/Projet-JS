@@ -23,30 +23,171 @@ const options = {
         },
       },
       schemas: {
-        Teacher: {
+        Author: {
           type: "object",
-          required: ["name", "price", "created"],
+          required: ["firstname", "lastname", "created"],
           properties: {
             id: {
               type: "integer",
-              description: "L'identifiant unique du produit.",
+              description: "L'identifiant unique de l'auteur.",
             },
-            name: {
+            firstname: {
               type: "string",
-              description: "Le nom du produit.",
+              description: "Le prénom de l'auteur.",
             },
-            price: {
-              type: "float",
-              description: "Le prix du produit.",
+            lastname: {
+              type: "string",
+              description: "Le nom de famille de l'auteur.",
             },
             created: {
               type: "string",
               format: "date-time",
-              description: "La date et l'heure de l'ajout d'un produit.",
+              description: "La date et l'heure de l'ajout de l'auteur.",
             },
           },
         },
-        // Ajoutez d'autres schémas ici si nécessaire
+        Book: {
+          type: "object",
+          required: [
+            "title",
+            "extrait",
+            "resume",
+            "year",
+            "editor",
+            "image",
+            "created",
+          ],
+          properties: {
+            id: {
+              type: "integer",
+              description: "L'identifiant unique du livre",
+            },
+            title: {
+              type: "string",
+              description: "Le titre du livre",
+            },
+            extrait: {
+              type: "string",
+              description: "l'extratit du livre",
+            },
+            resume: {
+              type: "string",
+              description: "Le resume du livre",
+            },
+            year: {
+              type: "string",
+              format: "date-time",
+              description: "La date et l'heure de la publication du livre.",
+            },
+            editor: {
+              type: "string",
+              description: "L'éditeur du livre",
+            },
+            image: {
+              type: "string",
+              description: "L'url vers l'image du livre",
+            },
+            created: {
+              type: "string",
+              format: "date-time",
+              description: "La date et l'heure de l'ajout du livre.",
+            },
+          },
+        },
+        Category: {
+          type: "object",
+          required: ["name", "created"],
+          properties: {
+            id: {
+              type: "integer",
+              description: "L'identifiant unique de la catégorie",
+            },
+            name: {
+              type: "string",
+              description: "Le nom de la catégorie",
+            },
+            created: {
+              type: "string",
+              format: "date-time",
+              description: "La date et l'heure de l'ajout de la catégorie.",
+            },
+          },
+        },
+        Comment: {
+          type: "object",
+          required: ["comment", "note", "created"],
+          properties: {
+            id: {
+              type: "integer",
+              description: "L'identifiant unique de la catégorie",
+            },
+            comment: {
+              type: "string",
+              description: "Un commentaires sur le livre",
+            },
+            created: {
+              type: "string",
+              format: "date-time",
+              description: "La date et l'heure de l'ajout du commentaire.",
+            },
+          },
+        },
+        Editor: {
+          type: "object",
+          required: ["nameEdit", "created"],
+          properties: {
+            id: {
+              type: "integer",
+              description: "L'identifiant unique de l' éditeur",
+            },
+            nameEdit: {
+              type: "string",
+              description: "Le nom de l'éditeur",
+            },
+            created: {
+              type: "string",
+              format: "date-time",
+              description: "La date et l'heure de l'ajout de l'éditeur.",
+            },
+          },
+        },
+        User: {
+          type: "object",
+          required: [
+            "username",
+            "password",
+            "firstname",
+            "lastname",
+            "created",
+          ],
+          properties: {
+            id: {
+              type: "integer",
+              description: "L'identifiant unique de l'utilisateur",
+            },
+            username: {
+              type: "string",
+              description: "Le nom d'utilisateur",
+            },
+            password: {
+              type: "string",
+              description: "Le mot de passe de l'utilisateur",
+            },
+            firstname: {
+              type: "string",
+              description: "Le prénom de l'utilisateur",
+            },
+            lastname: {
+              type: "string",
+              description: "Le nom de famille de l'utilisateur",
+            },
+            created: {
+              type: "string",
+              format: "date-time",
+              description: "La date et l'heure de l'ajout de l'éditeur.",
+            },
+          },
+        },
       },
     },
     security: [
