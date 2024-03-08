@@ -78,6 +78,47 @@ commentsRouter.get("/", auth, (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/comments/:id:
+ *  get:
+ *    tags: [Comments]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve one comment.
+ *    description: Retrieve one comment. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: One Comment
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The comment ID.
+ *                      example: 1
+ *                    comment:
+ *                      type: string
+ *                      description: The comment's comment
+ *                      example: Cool
+ *                    note:
+ *                      type: integer
+ *                      description: The comment's grade
+ *                      example: 5
+ *                    book:
+ *                      type: integer
+ *                      description: The comment's book ID.
+ *                      example: 2
+ *                    user:
+ *                      type: integer
+ *                      description: The comment's user ID.
+ *                      example: 2
+ */
 commentsRouter.get("/:id", auth, (req, res) => {
   Comment.findByPk(req.params.id)
     .then((comment) => {

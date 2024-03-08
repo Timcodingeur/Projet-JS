@@ -10,7 +10,7 @@ const editorsRouter = express();
  * @swagger
  * /api/editors/:
  *  get:
- *    tags: [Edirors]
+ *    tags: [Editors]
  *    security :
  *      - bearerAuth: []
  *    summary: Retrieve all editors.
