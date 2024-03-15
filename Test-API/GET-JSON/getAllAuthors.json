@@ -1,0 +1,47 @@
+{
+  "message": "La liste des auteur a bien été récupérée. ",
+  "data": [
+    {
+      "id": 4,
+      "firstname": "gege",
+      "lastname": "Akutami",
+      "created": "2024-03-15T14:11:48.000Z",
+      "updatedAt": "2024-03-15T14:11:48.000Z"
+    },
+    {
+      "id": 6,
+      "firstname": "A",
+      "lastname": "B",
+      "created": "2024-03-15T15:20:32.000Z",
+      "updatedAt": "2024-03-15T15:20:32.000Z"
+    },
+    {
+      "id": 1,
+      "firstname": "Masashi",
+      "lastname": "Kishimoto",
+      "created": "2024-03-15T14:11:48.000Z",
+      "updatedAt": "2024-03-15T14:11:48.000Z"
+    },
+    {
+      "id": 3,
+      "firstname": "Tite",
+      "lastname": "Kubo",
+      "created": "2024-03-15T14:11:48.000Z",
+      "updatedAt": "2024-03-15T14:11:48.000Z"
+    },
+    {
+      "id": 5,
+      "firstname": "Kentarō",
+      "lastname": "Miura",
+      "created": "2024-03-15T14:11:48.000Z",
+      "updatedAt": "2024-03-15T14:11:48.000Z"
+    },
+    {
+      "id": 2,
+      "firstname": "Eiichiro",
+      "lastname": "Oda",
+      "created": "2024-03-15T14:11:48.000Z",
+      "updatedAt": "2024-03-15T14:11:48.000Z"
+    }
+  ]
+}
