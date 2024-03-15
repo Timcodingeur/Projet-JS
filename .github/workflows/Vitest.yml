@@ -10,7 +10,7 @@ jobs:
       - name: Hello
         run: cd Projet-JS/project
       - name: Installe les dépendances
-        run: npm install
+        run: npm install --prefix ./Projet-JS/project/
       - name: Run les tests
         run: npm run test
       - name: Message de confirmation
