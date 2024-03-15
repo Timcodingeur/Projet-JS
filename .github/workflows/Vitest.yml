@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone le projet P_295 
-        run: git clone https://github.com/Timcodingeur/Projet-JS.git
+        run: git clone --branch routefinie https://github.com/Timcodingeur/Projet-JS.git
       - name: Hello
-        run: cd project
+        run: cd Projet-JS/project
       - name: Installe les dépendances
         run: npm install
       - name: Run les tests
