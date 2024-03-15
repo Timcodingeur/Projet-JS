@@ -1,5 +1,5 @@
 import express from "express";
-import { Author } from "../db/sequelize.mjs";
+import { Author, Book } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
@@ -8,7 +8,7 @@ const authorsRouter = express();
 
 /**
  * @swagger
- * /api/products/:
+ * /api/authors/:
  *  get:
  *    tags: [Authors]
  *    security :
@@ -73,7 +73,7 @@ authorsRouter.get("/", auth, (req, res) => {
 
 /**
  * @swagger
- * /api/products/:id:
+ * /api/authors/:id:
  *  get:
  *    tags: [Authors]
  *    security :
@@ -123,17 +123,15 @@ authorsRouter.get("/:id", auth, (req, res) => {
 });
 
 authorsRouter.get("/:id/book", auth, async (req, res) => {
-  const author = await Author.findByPk(req.params.id, {
-    include: [
-      {
-        model: book,
-        as: "books",
-      },
-    ],
+  const authorId = req.params.id;
+  Author.findByPk(authorId).then((author) => {
+    Book.findAll({
+      where: { author: { [Op.eq]: author.id } },
+    }).then((books) => {
+      const message = `Voici tout les livres de l'auteur : ${author.firstname} ${author.lastname}`;
+      res.json({ message, author: author, books: books });
+    });
   });
-
-  const message = `L'auteur du livre : ${author.firstname} ${author.lastname}`;
-  res.json({ message, data: author.book });
 });
 
 /**

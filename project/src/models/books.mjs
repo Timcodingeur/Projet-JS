@@ -58,6 +58,10 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      author: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       editor: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -66,7 +70,6 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-
       image: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -1,5 +1,6 @@
 import express from "express";
 import { Editor } from "../db/sequelize.mjs";
+import { Book } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
@@ -113,6 +114,18 @@ editorsRouter.get("/:id", auth, (req, res) => {
     });
 });
 
+editorsRouter.get("/:id/books", auth, async (req, res) => {
+  const editorId = req.params.id;
+  Editor.findByPk(editorId).then((editor) => {
+    Book.findAll({
+      where: { editor: { [Op.eq]: editor.id } },
+    }).then((books) => {
+      const message = `L'editeur du livre ${editor.nameEdit}`;
+      res.json({ message, editor: editor, book: books });
+    });
+  });
+});
+
 editorsRouter.post("/", auth, (req, res) => {
   Editor.create(req.body)
     .then((createdEditor) => {
@@ -127,20 +140,6 @@ editorsRouter.post("/", auth, (req, res) => {
         "L'éditeur n'a pas pu être ajouté. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
-});
-
-editorsRouter.get("/:id/books", auth, async (req, res) => {
-  const editor = await Editor.findByPk(req.params.id, {
-    include: [
-      {
-        model: book,
-        as: "books",
-      },
-    ],
-  });
-
-  const message = `L'editeur du livre ${editor.nameEdit}`;
-  res.json({ message, data: editor.book });
 });
 
 editorsRouter.put("/:id", auth, (req, res) => {

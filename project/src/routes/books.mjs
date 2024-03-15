@@ -1,5 +1,5 @@
 import express from "express";
-import { Book } from "../db/sequelize.mjs";
+import { Author, Book, Category, Editor } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
@@ -164,45 +164,33 @@ booksRouter.get("/:id", auth, (req, res) => {
 });
 
 booksRouter.get("/:id/editor", auth, async (req, res) => {
-  const book = await Book.findByPk(req.params.id, {
-    include: [
-      {
-        model: editor,
-        as: "editors",
-      },
-    ],
+  const bookId = req.params.id;
+  Book.findByPk(bookId).then((book) => {
+    Editor.findByPk(book.editor).then((editor) => {
+      const message = `L'editeur du livre est ${editor.nameEdit}`;
+      res.json({ message, editor: editor, book: book });
+    });
   });
-
-  const message = `L'editeur du livre ${book.title}`;
-  res.json({ message, data: book.editor });
 });
 
 booksRouter.get("/:id/category", auth, async (req, res) => {
-  const book = await Book.findByPk(req.params.id, {
-    include: [
-      {
-        model: category,
-        as: "categorys",
-      },
-    ],
+  const bookId = req.params.id;
+  Book.findByPk(bookId).then((book) => {
+    Category.findByPk(book.category).then((category) => {
+      const message = `La categorie du livre : ${category.name}`;
+      res.json({ message, book: book, category: category });
+    });
   });
-
-  const message = `La categirue du livre ${book.title}`;
-  res.json({ message, data: book.editor });
 });
 
 booksRouter.get("/:id/author", auth, async (req, res) => {
-  const book = await Book.findByPk(req.params.id, {
-    include: [
-      {
-        model: author,
-        as: "authors",
-      },
-    ],
+  const bookId = req.params.id;
+  Book.findByPk(bookId).then((book) => {
+    Author.findByPk(book.author).then((author) => {
+      const message = `L'auteur du livre : ${author.firstname} ${author.lastname}`;
+      res.json({ message, book: book, author: author });
+    });
   });
-
-  const message = `L'auteur du livre ${book.title}`;
-  res.json({ message, data: book.editor });
 });
 
 booksRouter.post("/", auth, (req, res) => {

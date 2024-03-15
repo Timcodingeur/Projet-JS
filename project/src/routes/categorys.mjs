@@ -123,18 +123,15 @@ categorysRouter.get("/:id", auth, (req, res) => {
 
 // Cette route permet de récupérer tous les livres de la catégorie ayant pour id
 categorysRouter.get("/:id/book", auth, async (req, res) => {
-  console.log(req.params.id);
-  const categor = Category.findByPk(req.params.id);
-  const category = await Book.findByPk(req.params.id, {
-    include: [
-      {
-        category: req.params.id,
-      },
-    ],
+  const categoryId = req.params.id;
+  Category.findByPk(categoryId).then((category) => {
+    Book.findAll({
+      where: { category: { [Op.eq]: category.id } },
+    }).then((books) => {
+      const message = `Categorie du livre : ${category.name}`;
+      res.json({ message, category: category, book: books });
+    });
   });
-
-  const message = `Categorie du livre ${categor}`;
-  res.json({ message, data: category });
 });
 
 categorysRouter.post("/", auth, (req, res) => {

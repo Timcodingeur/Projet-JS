@@ -34,7 +34,7 @@ export let books = [
     extrait: "J'ai déjà réuni du monde. On va régler cette affaire !",
     year: new Date(2004, 10, 5, 1, 2, 3, 4),
     editor: 2,
-    category: 2,
+    category: 1,
     author: 3,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Bleach1.jfif",
@@ -63,7 +63,7 @@ export let books = [
     year: new Date(2017, 1, 18, 1, 2, 3, 4),
     editor: 2,
     category: 3,
-    author: 1,
+    author: 5,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Berserk1.jpg",
     resume:
