@@ -2,10 +2,11 @@ export let books = [
   {
     id: 1,
     title: "OnePiece n°1",
-    extrait:
-      "Je nage peut-être comme une enclume, mais c'est pas un problème tant que je tombe pas à la mer!",
+    extrait: "Je deviendrais le rois des pirate",
     year: new Date(1997, 12, 24, 1, 2, 3, 4),
     editor: 2,
+    category: 1,
+    author: 1,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/OnePiece1.jpg",
     resume:
@@ -19,6 +20,8 @@ export let books = [
       "- Qu'est-ce que c'est... ... ce fameux serment ? - C'est de ne jamais dire qu'en réalité, tu es le démon-renard.",
     year: new Date(2002, 10, 3, 1, 2, 3, 4),
     editor: 1,
+    category: 1,
+    author: 2,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Naruto1.jpg",
     resume:
@@ -31,6 +34,8 @@ export let books = [
     extrait: "J'ai déjà réuni du monde. On va régler cette affaire !",
     year: new Date(2004, 10, 5, 1, 2, 3, 4),
     editor: 2,
+    category: 1,
+    author: 3,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Bleach1.jfif",
     resume:
@@ -40,22 +45,25 @@ export let books = [
   {
     id: 4,
     title: "Jujutsu Kaisen n°1",
-    extrait:
-      "Il a pris le temps d'acheter des souvenirs avant d'arriver ? Alors qu'on était sur le point de se faire tuer ?",
+    extrait: "cela vas foutre un sacré bazard, mais tkt sa vas bien s'passer",
     year: new Date(2020, 2, 6, 1, 2, 3, 4),
     editor: 3,
+    category: 1,
+    author: 4,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Jujutsu-Kaisen1.jpg",
     resume:
-      "Chaque année au Japon, on recense plus de 10 000 morts inexpliquées et portés disparus. Dans la majorité des cas, ce sont les sentiments négatifs des êtres humains qui sont en cause.",
+      "Chaque année au Japon, on recense plus de 10 000 morts inexpliquées et portés disparus(c triste). Dans la majorité des cas, ce sont les sentiments négatifs des êtres humains qui sont en cause. (balek)",
     created: new Date(),
   },
   {
     id: 5,
     title: "Berserk n°1",
-    extrait: "Vous qui entrez ici, abandonnez toute espérance.",
+    extrait: "sais tu faire kkdbr1die?",
     year: new Date(2017, 1, 18, 1, 2, 3, 4),
     editor: 2,
+    category: 3,
+    author: 5,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Berserk1.jpg",
     resume:

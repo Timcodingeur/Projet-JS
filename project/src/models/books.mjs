@@ -1,5 +1,5 @@
 export const BooksModel = (sequelize, DataTypes) => {
-  return sequelize.define(
+  const Book = sequelize.define(
     "Books",
     {
       id: {
@@ -14,6 +14,10 @@ export const BooksModel = (sequelize, DataTypes) => {
           msg: "Ce nom est déjà pris.",
         },
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           notEmpty: {
             msg: "Le nom ne peut pas être vide.",
           },
@@ -27,10 +31,10 @@ export const BooksModel = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Le prix ne peut pas être vide.",
+            msg: "L'extrait'ne peut pas être vide.",
           },
           notNull: {
-            msg: "Le prix est une propriété obligatoire",
+            msg: "L'extrait est une propriété obligatoire",
           },
         },
       },
@@ -38,11 +42,15 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           notEmpty: {
-            msg: "Le prix ne peut pas être vide.",
+            msg: "Le resume ne peut pas être vide.",
           },
           notNull: {
-            msg: "Le prix est une propriété obligatoire",
+            msg: "Le resume est une propriété obligatoire",
           },
         },
       },
@@ -50,22 +58,26 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      editor: {
-        type: DataTypes.STRING,
+      author: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "Le prix ne peut pas être vide.",
-          },
-          notNull: {
-            msg: "Le prix est une propriété obligatoire",
-          },
-        },
+      },
+      editor: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      category: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       image: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           notEmpty: {
             msg: "L'image ne peut pas être vide",
           },
@@ -81,4 +93,11 @@ export const BooksModel = (sequelize, DataTypes) => {
       updateAt: false,
     }
   );
+
+  Book.associate = () => {
+    Book.hasmany(note, { foreignKey: "note" });
+    Book.hasmany(comment, { foreignKey: "comment" });
+  };
+
+  return Book;
 };

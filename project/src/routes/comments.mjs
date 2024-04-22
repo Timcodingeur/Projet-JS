@@ -1,11 +1,52 @@
 import express from "express";
-import { Comment } from "../db/sequelize.mjs";
+import { Comment, Book, User } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
 
 const commentsRouter = express();
 
+/**
+ * @swagger
+ * /api/comments/:
+ *  get:
+ *    tags: [Comments]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve all comments.
+ *    description: Retrieve all comments. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: All comments
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The comment ID.
+ *                      example: 1
+ *                    comment:
+ *                      type: string
+ *                      description: The comment's comment
+ *                      example: Cool
+ *                    note:
+ *                      type: integer
+ *                      description: The comment's grade
+ *                      example: 5
+ *                    book:
+ *                      type: integer
+ *                      description: The comment's book ID.
+ *                      example: 2
+ *                    user:
+ *                      type: integer
+ *                      description: The comment's user ID.
+ *                      example: 2
+ */
 commentsRouter.get("/", auth, (req, res) => {
   if (req.query.comment) {
     if (req.query.comment.length < 2) {
@@ -53,6 +94,51 @@ commentsRouter.get("/:id", auth, (req, res) => {
         "Le commentaire n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
+});
+//
+//problème
+//route pour book a comment
+commentsRouter.get("/:id/book", auth, async (req, res) => {
+  const commentId = req.params.id;
+  Comment.findByPk(commentId).then((comment) => {
+    Book.findAll({
+      where: { id: { [Op.eq]: comment.book } },
+    }).then((books) => {
+      const message = `Categorie du livre : ${comment.name}`;
+      res.json({ message, comment: comment, book: books });
+    });
+  });
+});
+
+//
+//problème
+//route pour book a user
+commentsRouter.get("/:id/user", auth, async (req, res) => {
+  const commentId = req.params.id;
+  Comment.findByPk(commentId).then((comment) => {
+    User.findAll({
+      where: { id: { [Op.eq]: comment.user } },
+    }).then((users) => {
+      const message = `Categorie du livre : ${comment.name}`;
+      res.json({ message, comment: comment, user: users });
+    });
+  });
+});
+
+commentsRouter.get("/:id/info", auth, async (req, res) => {
+  const commentId = req.params.id;
+  Comment.findByPk(commentId).then((comment) => {
+    Book.findAll({
+      where: { id: { [Op.eq]: comment.book } },
+    }).then((books) => {
+      User.findAll({
+        where: { id: { [Op.eq]: comment.user } },
+      }).then((users) => {
+        const message = `Categorie du livre : ${comment.name}`;
+        res.json({ message, comment: comment, user: users, books: books });
+      });
+    });
+  });
 });
 
 commentsRouter.post("/", auth, (req, res) => {
