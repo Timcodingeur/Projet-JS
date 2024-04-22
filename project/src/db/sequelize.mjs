@@ -75,6 +75,8 @@ const importBooks = () => {
       extrait: book.extrait,
       date_year: book.year,
       editor: book.editor,
+      category: book.category,
+      author: book.author,
       image: book.image,
       resume: book.resume,
     }).then((book) => console.log(book.toJSON()));
@@ -94,6 +96,8 @@ const importComments = () => {
   comments.map((comment) => {
     Comment.create({
       comment: comment.comment,
+      book: comment.book,
+      user: comment.user,
       note: comment.note,
     }).then((comment) => console.log(comment.toJSON()));
   });
