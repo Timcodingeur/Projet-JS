@@ -1,11 +1,41 @@
 import express from "express";
 import { Editor } from "../db/sequelize.mjs";
+import { Book } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
 
 const editorsRouter = express();
 
+/**
+ * @swagger
+ * /api/editors/:
+ *  get:
+ *    tags: [Edirors]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve all editors.
+ *    description: Retrieve all editorss. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: All editors
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The editor ID.
+ *                      example: 1
+ *                    nameEdit:
+ *                      type: string
+ *                      description: The editor's name
+ *                      example: Kana
+ */
 editorsRouter.get("/", auth, (req, res) => {
   if (req.query.nameEdit) {
     if (req.query.nameEdit.length < 2) {
@@ -37,9 +67,37 @@ editorsRouter.get("/", auth, (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/editors/:id:
+ *  get:
+ *    tags: [Editors]
+ *    security :
+ *      - bearerAuth: []
+ *    summary: Retrieve one editor.
+ *    description: Retrieve one editor. Can be used to populate a select HTML tag.
+ *    responses:
+ *      200:
+ *        description: One Editor
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  propreties:
+ *                    id:
+ *                      type: integer
+ *                      description: The editor ID.
+ *                      example: 1
+ *                    nameEdit:
+ *                      type: string
+ *                      description: The editor's name
+ *                      example: Kana
+ */
 editorsRouter.get("/:id", auth, (req, res) => {
-  editor
-    .findByPk(req.params.id)
+  Editor.findByPk(req.params.id)
     .then((editor) => {
       if (editor === null) {
         const message =
@@ -54,6 +112,18 @@ editorsRouter.get("/:id", auth, (req, res) => {
         "L'éditeur n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
       res.status(500).json({ message, data: error });
     });
+});
+
+editorsRouter.get("/:id/books", auth, async (req, res) => {
+  const editorId = req.params.id;
+  Editor.findByPk(editorId).then((editor) => {
+    Book.findAll({
+      where: { editor: { [Op.eq]: editor.id } },
+    }).then((books) => {
+      const message = `L'editeur du livre ${editor.nameEdit}`;
+      res.json({ message, editor: editor, book: books });
+    });
+  });
 });
 
 editorsRouter.post("/", auth, (req, res) => {

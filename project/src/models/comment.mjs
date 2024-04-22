@@ -11,6 +11,10 @@ export const CommentModel = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           notEmpty: {
             msg: "Le prénom ne peut pas être vide.",
           },
@@ -23,6 +27,10 @@ export const CommentModel = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
+          is: {
+            args: /^[^?!]+$/,
+            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
+          },
           isFloat: {
             msg: "La note doit être un nombre comme 4,0.",
           },
@@ -33,6 +41,14 @@ export const CommentModel = (sequelize, DataTypes) => {
             msg: "La note est une propriété obligatoire",
           },
         },
+      },
+      book: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      user: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
     },
     {

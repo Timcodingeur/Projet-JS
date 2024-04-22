@@ -1,9 +1,0 @@
-{
-  "message": "Le categorie dont l'id vaut 1 a bien été récupérée",
-  "data": {
-    "id": 1,
-    "name": "shōnen",
-    "created": "2024-03-15T14:11:48.000Z",
-    "updatedAt": "2024-03-15T14:11:48.000Z"
-  }
-}
