@@ -1,5 +1,7 @@
 import express from "express";
 
+import cors from "cors";
+
 import { booksRouter } from "./routes/books.mjs";
 
 import { commentsRouter } from "./routes/comments.mjs";
@@ -23,6 +25,8 @@ import { swaggerSpec } from "./swagger.mjs";
 const app = express();
 
 app.use(express.json());
+
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 const port = 3000;
 

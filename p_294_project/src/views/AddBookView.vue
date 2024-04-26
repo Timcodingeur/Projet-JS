@@ -3,11 +3,11 @@
     <form @submit.prevent="onSubmit">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="titre" /> <br />
+      <input type="text" name="titre" id="titre" v-model="titre" maxlength="60" /> <br />
 
       <!-- Pour les catégories -->
       <label for="categorie">La catégorie :</label> <br />
-      <select name="categorie" id="categorie">
+      <select name="categorie" id="categorie" v-model="categorie">
         <option value=""></option>
         <option value="Bande dessinée">Bande dessinée</option>
         <option value="Manga">Manga</option>
@@ -18,10 +18,20 @@
 
       <!-- Pour le nombre de pages -->
       <label for="nmbPage">Nombre de Page :</label> <br />
-      <input type="number" name="nmbPage" id="nmbPage" v-model.number="nmbPage" /> <br />
+      <input
+        type="number"
+        name="nmbPage"
+        id="nmbPage"
+        v-model.number="nmbPage"
+        min="1"
+        oninput="if (this.value.length > 5) {
+          this.value = this.value.slice(0, 5)
+        }"
+      />
+      <br />
 
       <!-- Pour un extrait -->
-      <label for="extrait">Extarit :</label> <br />
+      <label for="extrait">Extrait :</label> <br />
       <input type="file" name="extrait" id="extrait" accept=".pdf" /> <br />
 
       <!-- Un résumé de l'ouvrage -->
@@ -42,7 +52,16 @@
 
       <!-- L'année de l'édition -->
       <label for="anneeEdition">Année de l'édition :</label> <br />
-      <input type="number" name="anneeEdition" id="anneeEdition" v-model.number="anneeEdition" />
+      <input
+        type="number"
+        name="anneeEdition"
+        id="anneeEdition"
+        v-model.number="anneeEdition"
+        min="1900"
+        oninput="if (this.value.length > 4) {
+          this.value = this.value.slice(0, 4)
+        }"
+      />
       <br />
 
       <!-- Image de couverture -->
@@ -62,7 +81,10 @@
 </template>
 
 <script setup>
+import axios from 'axios'
+
 let titre = ''
+let categorie = ''
 let nmbPage = ''
 let resume = ''
 let nomAuteur = ''
@@ -70,26 +92,54 @@ let prenomAuteur = ''
 let nomEditeur = ''
 let anneeEdition = ''
 
-function checkForm() {}
+let token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNDEzNzYyOSwiZXhwIjoxNzQ1Njk1MjI5fQ.vRalmBymJvo8HAEe5JSgMdl_O-tRNuot2YjS-LXW4HI'
 
-function onSubmit() {
+async function getBook() {
+  return await axios
+    .get('http://localhost:3000/api/books', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then((response) => response)
+}
+
+async function onSubmit() {
   let book = {
-    title: titre,
-    extrait: 'Hello',
-    year: anneeEdition,
-    editor: 1,
-    image: 'An url',
+    titre: titre,
+    categorie: categorie,
+    nmbPage: nmbPage,
     resume: resume,
-    created: new Date()
+    nomAuteur: nomAuteur,
+    prenomAuteur: prenomAuteur,
+    nomAuteur: nomAuteur,
+    nomEditeur: nomEditeur,
+    anneeEdition: anneeEdition
   }
 
-  titre = ''
-  nmbPage = ''
-  resume = ''
-  nomAuteur = ''
-  prenomAuteur = ''
-  nomEditeur = ''
-  anneeEdition = ''
+  const data = await (await getBook()).data.data
+
+  if (book.titre == '') {
+    alert(`The input titre du livre cannot be empty`)
+  } else if (book.categorie == '') {
+    alert(`The input catégorie cannot be empty`)
+  } else if (book.nmbPage == '') {
+    alert(`The input nombre de page cannot be empty`)
+  } else if (book.resume == '') {
+    alert(`The input resume cannot be empty`)
+  } else if (book.nomAuteur == '') {
+    alert(`The input nom de l'auteur cannot be empty`)
+  } else if (book.nomEditeur == '') {
+    alert(`The input nom de l'éditeur cannot be empty`)
+  } else if (book.prenomAuteur == '') {
+    alert(`The input prénom de l'auteur cannot be empty`)
+  } else if (book.resume == '') {
+    alert(`The input resume cannot be empty`)
+  } else if (book.anneeEdition == '') {
+    alert(`The input annee de l'édition cannot be empty`)
+  }
 }
 </script>
 
