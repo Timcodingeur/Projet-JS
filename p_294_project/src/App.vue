@@ -12,8 +12,11 @@ import HelloWorld from './components/HelloWorld.vue'
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/addBook">Add a book</RouterLink>
+        <RouterLink to="/modifyBook">Modify a book</RouterLink>
+        <RouterLink to="/deleteBook">Delete a book</RouterLink>
+        <RouterLink to="/addComment">Add a Comment</RouterLink>
+        <RouterLink to="/getBookByCategory">Get all the books by a category</RouterLink>
       </nav>
     </div>
   </header>
