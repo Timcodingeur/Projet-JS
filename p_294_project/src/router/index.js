@@ -29,9 +29,9 @@ const router = createRouter({
       component: () => import('../views/AddCommentView.vue')
     },
     {
-      path: '/getBookByCategory',
+      path: '/getBook',
       name: 'getBookByCategory',
-      component: () => import('../views/GetBookByCategoryView.vue')
+      component: () => import('../views/GetBook.vue')
     }
   ]
 })
