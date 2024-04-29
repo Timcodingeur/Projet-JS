@@ -41,6 +41,11 @@
       <!-- Bouton pour submit le form -->
       <input type="submit" value="Submit" />
     </form>
+
+    <div v-for="book in books" :key="book.id">
+      <h3>{{ book.title }}</h3>
+      <button @click="selectBook(book.id)">Voir détails</button>
+    </div>
   </div>
 </template>
 
@@ -53,20 +58,27 @@ let nomAuteur = ''
 let prenomAuteur = ''
 let nomEditeur = ''
 let anneeEdition = ''
-let token =
+let selectedBookId = ''
+let books = []
+let bookDetails = null
+const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcxNDEzOTA2MywiZXhwIjoxNzQ1Njk2NjYzfQ.Jij32qCOGqXA8YrWYe-De22vMJwo9f1eEfPu8JFu920'
 
 async function fetchBooks() {
   const params = {
-    titre,
-    nmbPage,
+    title: titre,
     nomAuteur,
     prenomAuteur,
     nomEditeur,
-    anneeEdition
+    anneeEdition: anneeEdition.toString(), // Assurez-vous que c'est une chaîne si nécessaire
+    nmbPage: nmbPage.toString() // Assurez-vous que c'est une chaîne si nécessaire
   }
 
-  Object.keys(params).forEach((key) => params[key] === '' && delete params[key])
+  Object.keys(params).forEach((key) => {
+    if (params[key] === '') {
+      delete params[key]
+    }
+  })
 
   try {
     const response = await axios.get('http://localhost:3000/api/books', {
@@ -76,40 +88,62 @@ async function fetchBooks() {
         Authorization: `Bearer ${token}`
       }
     })
-    console.log('Livres trouvés:', response.data)
-    return response.data // Ajout de cette ligne pour renvoyer les données
+    books = response.data.books || []
+    console.log('Livres trouvés:', books)
+    return books
   } catch (error) {
     console.error('Erreur lors de la recherche des livres:', error)
-    return null // Renvoyer null ou une valeur par défaut en cas d'erreur
+    return []
+  }
+}
+
+async function fetchBookById() {
+  if (!selectedBookId) {
+    console.error('Aucun ID de livre sélectionné')
+    return
+  }
+
+  try {
+    const response = await axios.get(`http://localhost:3000/api/books/${selectedBookId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    bookDetails = response.data
+    console.log('Détails du livre:', bookDetails)
+    return bookDetails
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails du livre:', error)
+    return null
   }
 }
 
 async function onSubmit() {
   try {
-    const books = await fetchBooks()
-    console.log(books)
+    await fetchBooks()
   } catch (error) {
     console.error("Erreur lors de l'obtention des livres:", error)
   }
-
-  // Réinitialisation des champs après l'envoi
-  titre = ''
-  nmbPage = ''
-  nomAuteur = ''
-  prenomAuteur = ''
-  nomEditeur = ''
-  anneeEdition = ''
 }
 
-async function onSubmit() {
-  const data = await (await fetchBooks()).data.data //permet d'afficher (vu que il renvoie un data)
-  // Réinitialisation des champs après l'envoi
+function selectBook(id) {
+  selectedBookId = id
+  fetchBookById().then((details) => {
+    // Afficher les détails ici ou les manipuler selon besoin
+    console.log(details)
+  })
+}
+
+function resetFields() {
   titre = ''
   nmbPage = ''
   nomAuteur = ''
   prenomAuteur = ''
   nomEditeur = ''
   anneeEdition = ''
+  selectedBookId = ''
+  bookDetails = null
 }
 </script>
 

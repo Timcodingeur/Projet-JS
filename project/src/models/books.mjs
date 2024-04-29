@@ -55,7 +55,7 @@ export const BooksModel = (sequelize, DataTypes) => {
         },
       },
       year: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       author: {
@@ -90,14 +90,17 @@ export const BooksModel = (sequelize, DataTypes) => {
     {
       timestamps: true,
       createdAt: "created",
-      updateAt: false,
+      updatedAt: false,
     }
   );
 
-  Book.associate = () => {
-    Book.hasmany(note, { foreignKey: "note" });
-    Book.hasmany(comment, { foreignKey: "comment" });
-  };
+  Book.associate = (models) => {
+    Book.hasMany(models.Note, { foreignKey: "book" });
+    Book.hasMany(models.Comment, { foreignKey: "book" });
 
+    Book.belongsTo(models.Author, { foreignKey: "author" });
+    Book.belongsTo(models.Editor, { foreignKey: "editor" });
+    Book.belongsTo(models.Category, { foreignKey: "category" });
+  };
   return Book;
 };
