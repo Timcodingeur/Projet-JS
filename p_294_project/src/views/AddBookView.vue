@@ -135,8 +135,6 @@ async function onSubmit() {
     alert(`The input nom de l'éditeur cannot be empty`)
   } else if (book.prenomAuteur == '') {
     alert(`The input prénom de l'auteur cannot be empty`)
-  } else if (book.resume == '') {
-    alert(`The input resume cannot be empty`)
   } else if (book.anneeEdition == '') {
     alert(`The input annee de l'édition cannot be empty`)
   }
