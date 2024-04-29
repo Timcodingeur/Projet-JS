@@ -1,13 +1,13 @@
 <template>
   <div class="addBook">
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" id="form">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="titre" maxlength="60" /> <br />
+      <input type="text" name="titre" id="titre" v-model="book.titre" maxlength="60" /> <br />
 
       <!-- Pour les catégories -->
       <label for="categorie">La catégorie :</label> <br />
-      <select name="categorie" id="categorie" v-model="categorie">
+      <select name="categorie" id="categorie" v-model="book.categorie">
         <option value=""></option>
         <option value="Bande dessinée">Bande dessinée</option>
         <option value="Manga">Manga</option>
@@ -22,33 +22,34 @@
         type="number"
         name="nmbPage"
         id="nmbPage"
-        v-model.number="nmbPage"
+        v-model.number="book.nmbPage"
         min="1"
-        oninput="if (this.value.length > 5) {
-          this.value = this.value.slice(0, 5)
+        oninput="if (this.value.length > 4) {
+          this.value = this.value.slice(0, 4)
         }"
       />
       <br />
 
       <!-- Pour un extrait -->
       <label for="extrait">Extrait :</label> <br />
-      <input type="file" name="extrait" id="extrait" accept=".pdf" /> <br />
+      <input type="file" name="extrait" id="extrait" accept=".pdf" @change="handleFile" /> <br />
 
       <!-- Un résumé de l'ouvrage -->
       <label for="resume">Résumé de l'ouvrage</label> <br />
-      <textarea name="resume" id="resume" cols="40" rows="5" v-model="resume"></textarea>
+      <textarea name="resume" id="resume" cols="40" rows="5" v-model="book.resume"></textarea>
       <br />
 
       <!-- Le nom et le prénom de l'écrivain -->
       <label for="nomAuteur">Nom de l'auteur :</label> <br />
-      <input type="text" name="nomAuteur" id="nomAuteur" v-model="nomAuteur" /> <br />
+      <input type="text" name="nomAuteur" id="nomAuteur" v-model="book.nomAuteur" /> <br />
 
       <label for="prenomAuteur">Prénom de l'auteur :</label> <br />
-      <input type="text" name="prenomAuteur" id="prenomAuteur" v-model="prenomAuteur" /> <br />
+      <input type="text" name="prenomAuteur" id="prenomAuteur" v-model="book.prenomAuteur" />
+      <br />
 
       <!-- Le nom de l'éditeur -->
       <label for="nomEditeur">Nom de l'éditeur :</label> <br />
-      <input type="text" name="nomEditeur" id="nomEditeur" v-model="nomEditeur" /> <br />
+      <input type="text" name="nomEditeur" id="nomEditeur" v-model="book.nomEditeur" /> <br />
 
       <!-- L'année de l'édition -->
       <label for="anneeEdition">Année de l'édition :</label> <br />
@@ -56,22 +57,14 @@
         type="number"
         name="anneeEdition"
         id="anneeEdition"
-        v-model.number="anneeEdition"
-        min="1900"
-        oninput="if (this.value.length > 4) {
-          this.value = this.value.slice(0, 4)
-        }"
+        v-model="book.anneeEdition"
+        max="2024"
       />
       <br />
 
       <!-- Image de couverture -->
       <label for="image">Image de la couverture :</label> <br />
-      <input
-        type="file"
-        name="image"
-        id="image"
-        accept=".avif, .jpg, .jpeg, .jfif, .pjpeg, .pjp, .png, .svg, .webp, .bmp, .ico, .cur"
-      />
+      <input type="file" name="image" id="image" accept=".jpg, .png" @change="handleImage" />
       <br />
 
       <!-- Bouton pour submit le form -->
@@ -82,64 +75,94 @@
 
 <script setup>
 import axios from 'axios'
+import { ref } from 'vue'
 
-let titre = ''
-let categorie = ''
-let nmbPage = ''
-let resume = ''
-let nomAuteur = ''
-let prenomAuteur = ''
-let nomEditeur = ''
-let anneeEdition = ''
+let book = ref({
+  titre: '',
+  categorie: '',
+  nmbPage: 1,
+  resume: '',
+  nomAuteur: '',
+  prenomAuteur: '',
+  nomEditeur: '',
+  anneeEdition: '',
+  image: null,
+  extrait: null
+})
 
 let token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNDEzNzYyOSwiZXhwIjoxNzQ1Njk1MjI5fQ.vRalmBymJvo8HAEe5JSgMdl_O-tRNuot2YjS-LXW4HI'
 
-async function getBook() {
-  return await axios
-    .get('http://localhost:3000/api/books', {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then((response) => response)
+async function handleImage(e) {
+  let file = e.target.files[0]
+  let accceptedType = ['image/png', 'image/jpg']
+
+  if (!accceptedType.includes(file.type)) {
+    alert('The wrong type of image is choose')
+    return
+  }
+  book.value.image = file
+}
+
+async function handleFile(e) {
+  let file = e.target.files[0]
+  if (file.type != 'application/pdf') {
+    alert('The wrong type of image is choose')
+    return
+  }
+  book.value.extrait = file
+}
+
+async function getAuthorByName(firstname, lastname) {
+  const response = await axios.get('http://localhost:3000/api/authors', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const authors = response.data.data
+
+  for (const auth of authors) {
+    if (auth.firstname == firstname && auth.lastname == lastname) {
+      return auth.id
+    }
+  }
 }
 
 async function onSubmit() {
-  let book = {
-    titre: titre,
-    categorie: categorie,
-    nmbPage: nmbPage,
-    resume: resume,
-    nomAuteur: nomAuteur,
-    prenomAuteur: prenomAuteur,
-    nomAuteur: nomAuteur,
-    nomEditeur: nomEditeur,
-    anneeEdition: anneeEdition
-  }
-
-  const data = await (await getBook()).data.data
-
-  if (book.titre == '') {
+  if (book.value.titre == '') {
     alert(`The input titre du livre cannot be empty`)
-  } else if (book.categorie == '') {
+  } else if (book.value.categorie == '') {
     alert(`The input catégorie cannot be empty`)
-  } else if (book.nmbPage == '') {
+  } else if (book.value.nmbPage == '') {
     alert(`The input nombre de page cannot be empty`)
-  } else if (book.resume == '') {
+  } else if (book.value.resume == '') {
     alert(`The input resume cannot be empty`)
-  } else if (book.nomAuteur == '') {
+  } else if (book.value.nomAuteur == '') {
     alert(`The input nom de l'auteur cannot be empty`)
-  } else if (book.nomEditeur == '') {
+  } else if (book.value.nomEditeur == '') {
     alert(`The input nom de l'éditeur cannot be empty`)
-  } else if (book.prenomAuteur == '') {
+  } else if (book.value.prenomAuteur == '') {
     alert(`The input prénom de l'auteur cannot be empty`)
-  } else if (book.resume == '') {
+  } else if (book.value.resume == '') {
     alert(`The input resume cannot be empty`)
-  } else if (book.anneeEdition == '') {
+  } else if (book.value.anneeEdition == '') {
     alert(`The input annee de l'édition cannot be empty`)
   }
+
+  let form = new FormData()
+
+  form.append('titre', book.value.titre)
+  form.append('categorie', book.value.categorie)
+  form.append('nombre de page', book.value.nmbPage)
+  form.append("nom de l'auteur", book.value.nomAuteur)
+  form.append("prenom de l'auteur", book.value.prenomAuteur)
+  form.append("nom de l'editeur", book.value.nomEditeur)
+  form.append("annee de l'edition", book.value.anneeEdition)
+  form.append('fichiers', [book.value.extrait, book.value.image])
+
+  let data = await getAuthorByName(prenomAuteur, nomAuteur)
 }
 </script>
 
@@ -155,6 +178,7 @@ label {
 
 input[type='text'],
 input[type='number'],
+input[type='date'],
 select,
 textarea {
   width: 100%;

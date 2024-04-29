@@ -100,17 +100,6 @@ async function onSubmit() {
   nomEditeur = ''
   anneeEdition = ''
 }
-
-async function onSubmit() {
-  const data = await (await fetchBooks()).data.data //permet d'afficher (vu que il renvoie un data)
-  // Réinitialisation des champs après l'envoi
-  titre = ''
-  nmbPage = ''
-  nomAuteur = ''
-  prenomAuteur = ''
-  nomEditeur = ''
-  anneeEdition = ''
-}
 </script>
 
 <style>
