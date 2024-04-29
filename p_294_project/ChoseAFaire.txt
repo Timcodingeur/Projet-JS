@@ -1,0 +1,2 @@
+Afficher une suggestion pour la recherche de livre (A faire)
+Changer les résultats visible de get pour avoir deux options sur le livre avec un icon [modifier ou supprimer] (A faire)

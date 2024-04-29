@@ -1,6 +1,6 @@
 export const EditorModel = (sequelize, DataTypes) => {
   return sequelize.define(
-    "editor",
+    "Editor",
     {
       id: {
         type: DataTypes.INTEGER,

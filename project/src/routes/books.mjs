@@ -3,6 +3,18 @@ import { Author, Book, Category, Editor, Comment } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
+import multer from "multer";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "images/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const booksRouter = express();
 
@@ -60,36 +72,77 @@ const booksRouter = express();
  *                      description: The book's resume
  *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
  */
-booksRouter.get("/", auth, (req, res) => {
-  if (req.query.title) {
-    if (req.query.title.length < 4) {
-      const message = `Le terme de la recherche doit contenir au moins 4 caractères`;
-      return res.status(400).json({ message });
+booksRouter.get("/", auth, async (req, res) => {
+  try {
+    let Books;
+    if (req.query.title) {
+      if (req.query.title.length < 4) {
+        const message = `Le terme de la recherche doit contenir au moins 4 caractères.`;
+        return res.status(400).json({ message });
+      }
+      let limit = 6;
+      if (req.query.limit) {
+        limit = parseInt(req.query.limit, 10);
+      }
+      Books = await Book.findAll({
+        where: { title: { [Op.like]: `%${req.query.title}%` } },
+        order: ["title"],
+        limit: limit,
+      });
+    } else {
+      Books = await Book.findAll({ order: ["title"] });
     }
-    let limit = 6;
-    if (req.query.limit) {
-      limit = parseInt(req.query.limit, 10);
-    }
-    return Book.findAll({
-      where: { title: { [Op.like]: `%${req.query.title}%` } },
-      order: ["title"],
-      limit: limit,
-    }).then((Books) => {
-      const message = `Il y a ${Books.count}  livre qui correspondant au treme de la recherche`;
-      res.json(sucess(message, Books));
-    });
+
+    // Récupérer les détails en parallèle pour chaque livre
+    const detailedBooks = await Promise.all(
+      Books.map(async (book) => {
+        const [author, editor, category] = await Promise.all([
+          Author.findByPk(book.author),
+          Editor.findByPk(book.editor),
+          Category.findByPk(book.category),
+        ]);
+
+        return {
+          id: book.id,
+          title: book.title,
+          extrait: book.extrait,
+          resume: book.resume,
+          year: book.year,
+          author: {
+            id: author.id,
+            firstname: author.firstname,
+            lastname: author.lastname,
+            created: author.created,
+            updatedAt: author.updatedAt,
+          },
+          editor: {
+            id: editor.id,
+            nameEdit: editor.nameEdit,
+            created: editor.created,
+            updatedAt: editor.updatedAt,
+          },
+          category: {
+            id: category.id,
+            name: category.name,
+            created: category.created,
+            updatedAt: category.updatedAt,
+          },
+          image: book.image,
+          created: book.created,
+        };
+      })
+    );
+
+    const message = `Informations complètes sur les livres récupérées avec succès.`;
+    res.json({ message, books: detailedBooks });
+  } catch (error) {
+    console.error("Error while fetching books:", error);
+    res
+      .status(500)
+      .json({ message: "Erreur serveur", error: error.toString() });
   }
-  Book.findAll({ order: ["title"] })
-    .then((Books) => {
-      const message = "La liste des livres a bien été récupérée. ";
-      res.json(sucess(message, Books));
-    })
-    .catch((error) => {
-      const message =
-        "La liste des livres n'a pas été récupéré. Merci de réessayer dans quelque instants.";
-      res.status(500).json({ message, data: error });
-    });
 });
+
 //
 //route vers comments
 booksRouter.get("/:id/comment", auth, async (req, res) => {
@@ -168,43 +221,73 @@ booksRouter.get("/:id/comment", auth, async (req, res) => {
  *                      description: The book's resume
  *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
  */
-booksRouter.get("/:id", auth, (req, res) => {
-  Book.findByPk(req.params.id)
-    .then((Books) => {
-      if (Books === null) {
-        const message =
-          "Le livre demandé n'existe pas. Merci de réessayer avec une autre identifiant.";
-        return res.status(404).json({ message });
-      }
-      const message = `Le livredont l'id vaut ${Books.id} a bien été récupérée`;
-      res.json(sucess(message, Books));
-    })
-    .catch((error) => {
-      const message =
-        "Le livre n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
-      res.status(500).json({ message, data: error });
-    });
-});
 
-booksRouter.get("/:id/editor", auth, async (req, res) => {
-  const bookId = req.params.id;
-  Book.findByPk(bookId).then((book) => {
+booksRouter.get("/:id", auth, async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const book = await Book.findByPk(bookId);
+
     if (book === null) {
-      const message =
-        "Le livre demandé n'existe pas. Merci d'essayer un autre identifiant.";
-      return res.status(404).json({ message });
-    }
-    Editor.findByPk(book.editor)
-      .then((editor) => {
-        const message = `L'editeur du livre est ${editor.nameEdit}`;
-        res.json({ message, editor: editor, book: book });
-      })
-      .catch((error) => {
-        const message =
-          "L'éditeur du livre demandé n'a pas pu être récupéré. Merci de réessayer dans quelques instants.";
-        res.status(500).json({ message, data: error });
+      return res.status(404).json({
+        message:
+          "Le livre demandé n'existe pas. Merci d'essayer un autre identifiant.",
       });
-  });
+    }
+
+    // Récupérer l'auteur, l'éditeur et la catégorie en parallèle
+    const [author, editor, category, comments] = await Promise.all([
+      Author.findByPk(book.author),
+      Editor.findByPk(book.editor),
+      Category.findByPk(book.category),
+      Comment.findAll({
+        where: { book: bookId },
+        attributes: ["id", "comment", "note"], // Sélection limitée aux ID des commentaires et aux notes
+      }),
+    ]);
+
+    // Créer une nouvelle structure pour le livre incluant les informations de l'auteur, éditeur, et catégorie
+    const detailedBook = {
+      id: book.id,
+      title: book.title,
+      extrait: book.extrait,
+      resume: book.resume,
+      year: book.year,
+      author: {
+        id: author.id,
+        firstname: author.firstname,
+        lastname: author.lastname,
+        created: author.created,
+        updatedAt: author.updatedAt,
+      },
+      editor: {
+        id: editor.id,
+        nameEdit: editor.nameEdit,
+        created: editor.created,
+        updatedAt: editor.updatedAt,
+      },
+      category: {
+        id: category.id,
+        name: category.name,
+        created: category.created,
+        updatedAt: category.updatedAt,
+      },
+      image: book.image,
+      created: book.created,
+      comments: comments, // Ajout des commentaires avec juste l'ID et la note
+    };
+
+    const message =
+      "Informations complètes sur le livre récupérées avec succès.";
+    res.json({ message, book: detailedBook });
+  } catch (error) {
+    console.error("Error while fetching book:", error);
+    if (!res.headersSent) {
+      res.status(500).json({
+        message: "Erreur serveur",
+        error: error.toString(),
+      });
+    }
+  }
 });
 
 booksRouter.get("/:id/category", auth, async (req, res) => {
@@ -238,7 +321,9 @@ booksRouter.get("/:id/author", auth, async (req, res) => {
   });
 });
 
-booksRouter.post("/", auth, (req, res) => {
+booksRouter.post("/", auth, upload.array("fichiers", 2), (req, res) => {
+  const extrait = req.files[0];
+  const image = req.files[1];
   Book.create(req.body)
     .then((createdBook) => {
       const message = `Le livre ${createdBook.title} a bien été crée !`;
