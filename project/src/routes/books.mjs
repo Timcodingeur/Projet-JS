@@ -3,6 +3,18 @@ import { Author, Book, Category, Editor, Comment } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
+import multer from "multer";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "images/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const booksRouter = express();
 
@@ -309,7 +321,9 @@ booksRouter.get("/:id/author", auth, async (req, res) => {
   });
 });
 
-booksRouter.post("/", auth, (req, res) => {
+booksRouter.post("/", auth, upload.array("fichiers", 2), (req, res) => {
+  const extrait = req.files[0];
+  const image = req.files[1];
   Book.create(req.body)
     .then((createdBook) => {
       const message = `Le livre ${createdBook.title} a bien été crée !`;

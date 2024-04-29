@@ -126,6 +126,7 @@ async function onSubmit() {
     console.error("Erreur lors de l'obtention des livres:", error)
   }
 }
+<<<<<<< HEAD
 
 function selectBook(id) {
   selectedBookId = id
@@ -145,6 +146,8 @@ function resetFields() {
   selectedBookId = ''
   bookDetails = null
 }
+=======
+>>>>>>> 6762952be7d6d5b763891ed2b8b62864187dfb06
 </script>
 
 <style>
