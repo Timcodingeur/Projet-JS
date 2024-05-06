@@ -321,9 +321,8 @@ booksRouter.get("/:id/author", auth, async (req, res) => {
   });
 });
 
-booksRouter.post("/", auth, upload.array("fichiers", 2), (req, res) => {
-  const extrait = req.files[0];
-  const image = req.files[1];
+booksRouter.post("/", auth, upload.single("image"), (req, res) => {
+  const image = req.file;
   Book.create(req.body)
     .then((createdBook) => {
       const message = `Le livre ${createdBook.title} a bien été crée !`;
