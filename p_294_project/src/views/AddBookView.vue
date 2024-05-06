@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import axios from 'axios'
+import axios, { formToJSON } from 'axios'
 import { ref } from 'vue'
 
 let book = ref({
@@ -118,6 +118,23 @@ function handleImage(e) {
     return
   }
   book.value.image = file
+}
+
+async function getCategoryByName(name) {
+  const response = await axios.get('http://localhost:3000/api/categorys', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const categories = response.data.data
+
+  for (const categ of categories) {
+    if (categ.name == name) {
+      return categ.id.toString()
+    }
+  }
 }
 
 async function getEditorByName(name) {
@@ -154,11 +171,12 @@ async function getAuthorByName(firstname, lastname) {
   }
 }
 
-async function postBook(data) {
+async function postBook(form) {
   return await axios
-    .post('http://localhost:3000/api/books', data, {
+    .post('http://localhost:3000/api/books', formToJSON(form), {
       headers: {
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`
       }
     })
@@ -202,6 +220,8 @@ async function onSubmit() {
 
   let editorId = await getEditorByName(book.value.nomEditeur)
 
+  let categoryId = await getCategoryByName(book.value.categorie)
+
   book.value.extrait = book.value.extrait.toString()
 
   if (authorId == undefined) {
@@ -216,28 +236,17 @@ async function onSubmit() {
 
   let form = new FormData()
 
-  form.append('titre', book.value.titre.trimStart().trimEnd())
-  form.append('categorie', book.value.categorie.trimStart().trimEnd())
-  form.append('nombre de page', parseInt(book.value.nmbPage.trimStart().trimEnd()))
-  form.append('extrait', book.value.extrait.trimStart().trimEnd())
-  form.append('auteur', authorId.trimStart().trimEnd())
-  form.append('editeur', editorId.trimStart().trimEnd())
-  form.append("annee de l'edition", parseInt(book.value.anneeEdition.trimStart().trimEnd()))
-  form.append('image', book.value.image)
+  form.set('title', book.value.titre.trimStart().trimEnd())
+  form.set('category', parseInt(categoryId.trimStart().trimEnd()))
+  form.set('nmbPage', parseInt(book.value.nmbPage.trimStart().trimEnd()))
+  form.set('extrait', book.value.extrait.trimStart().trimEnd())
+  form.set('resume', book.value.resume.trimStart().trimEnd())
+  form.set('author', parseInt(authorId.trimStart().trimEnd()))
+  form.set('editor', parseInt(editorId.trimStart().trimEnd()))
+  form.set("annee de l'edition", parseInt(book.value.anneeEdition.trimStart().trimEnd()))
+  form.set('image', book.value.image)
 
-  let newBook = {
-    title: book.value.titre,
-    category: book.value.categorie,
-    nmbPage: book.value.nmbPage,
-    resume: book.value.resume,
-    author: authorId,
-    editor: editorId,
-    date_year: book.value.anneeEdition,
-    image: book.value.image,
-    extrait: book.value.extrait
-  }
-
-  postBook(newBook)
+  postBook(form)
 
   book.value.titre = ''
   book.value.categorie = ''

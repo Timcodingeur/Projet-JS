@@ -72,13 +72,14 @@ const importBooks = () => {
   books.map((book) => {
     Book.create({
       title: book.title,
-      extrait: book.extrait,
-      date_year: book.year,
-      editor: book.editor,
       category: book.category,
-      author: book.author,
-      image: book.image,
+      nmbPage: book.nmbPage,
       resume: book.resume,
+      author: book.author,
+      editor: book.editor,
+      date_year: book.year,
+      image: book.image,
+      extrait: book.extrait,
     }).then((book) => console.log(book.toJSON()));
   });
 };

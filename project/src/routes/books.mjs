@@ -322,13 +322,15 @@ booksRouter.get("/:id/author", auth, async (req, res) => {
 });
 
 booksRouter.post("/", auth, upload.single("image"), (req, res) => {
-  const image = req.file;
+  console.log(req.body);
   Book.create(req.body)
     .then((createdBook) => {
+      console.log(createdBook);
       const message = `Le livre ${createdBook.title} a bien été crée !`;
       res.json(sucess(message, createdBook));
     })
     .catch((error) => {
+      console.log(error);
       if (error instanceof ValidationError) {
         return res.status(400).json({ message: error.message, data: error });
       }
