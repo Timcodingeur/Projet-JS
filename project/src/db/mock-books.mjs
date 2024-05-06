@@ -4,9 +4,10 @@ export let books = [
     title: "OnePiece n°1",
     extrait: "Je deviendrais le rois des pirate",
     year: "1997",
-    editor: 2,
+    editor: 1,
     category: 1,
     author: 1,
+    nmbPage: 3,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/OnePiece1.jpg",
     resume:
@@ -22,6 +23,7 @@ export let books = [
     editor: 1,
     category: 1,
     author: 2,
+    nmbPage: 700,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Naruto1.jpg",
     resume:
@@ -36,6 +38,7 @@ export let books = [
     editor: 2,
     category: 1,
     author: 3,
+    nmbPage: 250,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Bleach1.jfif",
     resume:
@@ -50,6 +53,7 @@ export let books = [
     editor: 3,
     category: 1,
     author: 4,
+    nmbPage: 321,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Jujutsu-Kaisen1.jpg",
     resume:
@@ -64,6 +68,7 @@ export let books = [
     editor: 2,
     category: 3,
     author: 5,
+    nmbPage: 31,
     image:
       "https://github.com/Timcodingeur/Projet-JS/blob/main/Image/Image-Books/Berserk1.jpg",
     resume:
