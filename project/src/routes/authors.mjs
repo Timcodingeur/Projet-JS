@@ -147,7 +147,7 @@ authorsRouter.get("/:id/book", auth, async (req, res) => {
 
 /**
  * @swagger
- * /api/products/:id:
+ * /api/authors/:id:
  *  post:
  *    tags: [Authors]
  *    security :
@@ -197,14 +197,14 @@ authorsRouter.post("/", auth, (req, res) => {
 /**
  * @swagger
  * /api/products/:id
- * put:
- *  tags: [Authors]
+ *  put:
+ *    tags: [Authors]
  *  security:
  *    - bearerAuth: []
- *  summary: Change a author.
- *  description: Change a author. That cahnged also in the database.
- *  responses:
- *    200:
+ *        summary: Change a author.
+ *          description: Change a author. That cahnged also in the database.
+ *           responses:
+ *            200:
  *
  */
 authorsRouter.put("/:id", auth, (req, res) => {
