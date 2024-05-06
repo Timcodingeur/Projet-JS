@@ -73,10 +73,11 @@ const importBooks = () => {
     Book.create({
       title: book.title,
       extrait: book.extrait,
-      date_year: book.year,
+      year: book.year,
       editor: book.editor,
       category: book.category,
       author: book.author,
+      nmbPage: book.nmbPage,
       image: book.image,
       resume: book.resume,
     }).then((book) => console.log(book.toJSON()));

@@ -38,6 +38,10 @@ export const BooksModel = (sequelize, DataTypes) => {
           },
         },
       },
+      year: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       resume: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -54,11 +58,12 @@ export const BooksModel = (sequelize, DataTypes) => {
           },
         },
       },
-      year: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
+
       author: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      nmbPage: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -66,6 +71,7 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+
       category: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -98,9 +104,22 @@ export const BooksModel = (sequelize, DataTypes) => {
     Book.hasMany(models.Note, { foreignKey: "book" });
     Book.hasMany(models.Comment, { foreignKey: "book" });
 
-    Book.belongsTo(models.Author, { foreignKey: "author" });
-    Book.belongsTo(models.Editor, { foreignKey: "editor" });
-    Book.belongsTo(models.Category, { foreignKey: "category" });
+    Book.belongsTo(models.Author, {
+      foreignKey: "author",
+      as: "author",
+    });
+
+    // Associating Book with Editor
+    Book.belongsTo(models.Editor, {
+      foreignKey: "editor",
+      as: "editor",
+    });
+
+    // Associating Book with Category
+    Book.belongsTo(models.Category, {
+      foreignKey: "category",
+      as: "category",
+    });
   };
   return Book;
 };
