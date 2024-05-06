@@ -122,7 +122,7 @@ booksRouter.get("/", auth, async (req, res) => {
     const detailedBooks = await Promise.all(
       Books.map(async (book) => {
         const [author, editor, category, comments] = await Promise.all([
-          Author.findByPk(book.author + 1),
+          Author.findByPk(book.author),
           Editor.findByPk(book.editor),
           Category.findByPk(book.category),
           Comment.findAll({
