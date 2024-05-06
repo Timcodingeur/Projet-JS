@@ -16,7 +16,7 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/modifyBook">Modifier un livre</RouterLink>
         <RouterLink to="/deleteBook">Supprimer un livre</RouterLink>
         <RouterLink to="/addComment">Ajouter un commentaire</RouterLink>
-        <RouterLink to="/getBook">Rechercher des livre via des paramètre</RouterLink>
+        <RouterLink to="/getBook">Rechercher des livres via des paramètres</RouterLink>
       </nav>
     </div>
   </header>
