@@ -168,6 +168,7 @@ async function onSubmit() {
   form.set('author', parseInt(authorId.trimStart().trimEnd()))
   form.set('editor', parseInt(editorId.trimStart().trimEnd()))
   form.set("annee de l'edition", parseInt(book.value.anneeEdition.trimStart().trimEnd()))
+  form.set('year', book.value.year)
   form.set('image', book.value.image)
 
   putBook(form)
