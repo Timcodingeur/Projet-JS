@@ -6,14 +6,8 @@
       <input type="text" name="titre" id="titre" v-model="titre" /> <br />
 
       <!-- Pour les catégories -->
-      <label for="categorie">La catégorie :</label> <br />
-      <select name="categorie" id="categorie">
-        <option value=""></option>
-        <option value="Bande dessinée">Bande dessinée</option>
-        <option value="Manga">Manga</option>
-        <option value="Roman">Roman</option>
-        <option value="Livre">Livre</option>
-      </select>
+      <label for="categoryName">La catégorie :</label> <br />
+      <input type="text" name="categoryName" id="categoryName" v-model="categoryName" />
       <br />
 
       <!-- Pour le nombre de pages -->
@@ -53,6 +47,7 @@
 import axios from 'axios'
 
 let titre = ''
+let categoryName = ''
 let nmbPage = ''
 let nomAuteur = ''
 let prenomAuteur = ''
@@ -67,6 +62,7 @@ const token =
 async function fetchBooks() {
   const params = {
     title: titre,
+    categoryName,
     nomAuteur,
     prenomAuteur,
     nomEditeur,
