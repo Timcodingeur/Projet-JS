@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS db_passionLecture;
-CREATE DATABASE db_passionLecture;
-USE db_passionLecture;
+DROP DATABASE IF EXISTS db_ouvrage;
+CREATE DATABASE db_ouvrage;
+USE db_ouvrage;
 
 CREATE TABLE T_CATEGORY(
    idCategorie INT AUTO_INCREMENT,
