@@ -23,7 +23,7 @@ Nous utiliserons le framework frontend Vue.js avec l'API option.
   <img src="https://contrib.rocks/image?repo=Timcodingeur/Projet-JS" />
 </a>
 
-## Installation de Node, NPM et librarie utilitaires
+## Installation de Node, NPM et librairie utilitaires
 ### Installation of Node and NPM :
 * Allez sur ce lien -> [Site Web de Node](https://nodejs.org/en)
 * Installez l'installateur .msi 64 bits
@@ -44,6 +44,7 @@ npm install axios --save
 ```
 
 ## Cahier des charges
+
 Le projet "Passion Lecture" est développé selon les exigences suivantes :
 
 * Objectif : Développer une API REST backend exploitable et professionnelle pour une application de partage de lectures.
