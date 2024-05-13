@@ -16,7 +16,7 @@ const router = createRouter({
     {
       path: '/modifyBook',
       name: 'modifyBook',
-      component: () => import('../views/ModifyBookView.vue')
+      component: () => import('../components/ImportAsynchrone.vue')
     },
     {
       path: '/deleteBook',

@@ -120,23 +120,6 @@ function handleImage(e) {
   book.value.image = file
 }
 
-async function getCategoryByName(name) {
-  const response = await axios.get('http://localhost:3000/api/categorys', {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-  const categories = response.data.data
-
-  for (const categ of categories) {
-    if (categ.name == name) {
-      return categ.id.toString()
-    }
-  }
-}
-
 async function getEditorByName(name) {
   const response = await axios.get('http://localhost:3000/api/editors', {
     headers: {
