@@ -92,6 +92,7 @@
 <script setup>
 import axios, { formToJSON } from 'axios'
 import { ref } from 'vue'
+import { getCategoryByName } from '../../service/Axios'
 
 let book = ref({
   titre: '',
@@ -227,6 +228,7 @@ async function onSubmit() {
   form.set('author', parseInt(authorId.trimStart().trimEnd()))
   form.set('editor', parseInt(editorId.trimStart().trimEnd()))
   form.set("annee de l'edition", parseInt(book.value.anneeEdition.trimStart().trimEnd()))
+  form.set('year', book.value.anneeEdition)
   form.set('image', book.value.image)
 
   postBook(form)
