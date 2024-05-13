@@ -3,11 +3,11 @@
     <form @submit.prevent="onSubmit">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="book.titre" maxlength="60" /> <br />
+      <input type="text" name="titre" id="titre" v-model="book.title" maxlength="60" /> <br />
 
       <!-- Pour les catégories -->
       <label for="categorie">La catégorie :</label> <br />
-      <select name="categorie" id="categorie" v-model="book.categorie">
+      <select name="categorie" id="categorie" v-model="book.category.name">
         <option value=""></option>
         <option value="Bande dessinée">Bande dessinée</option>
         <option value="Manga">Manga</option>
@@ -51,15 +51,15 @@
 
       <!-- Le nom et le prénom de l'écrivain -->
       <label for="nomAuteur">Nom de l'auteur :</label> <br />
-      <input type="text" name="nomAuteur" id="nomAuteur" v-model="book.nomAuteur" /> <br />
+      <input type="text" name="nomAuteur" id="nomAuteur" v-model="book.author.lastname" /> <br />
 
       <label for="prenomAuteur">Prénom de l'auteur :</label> <br />
-      <input type="text" name="prenomAuteur" id="prenomAuteur" v-model="book.prenomAuteur" />
+      <input type="text" name="prenomAuteur" id="prenomAuteur" v-model="book.author.firstname" />
       <br />
 
       <!-- Le nom de l'éditeur -->
       <label for="nomEditeur">Nom de l'éditeur :</label> <br />
-      <input type="text" name="nomEditeur" id="nomEditeur" v-model="book.nomEditeur" /> <br />
+      <input type="text" name="nomEditeur" id="nomEditeur" v-model="book.editor.ediName" /> <br />
 
       <!-- L'année de l'édition -->
       <label for="anneeEdition">Année de l'édition :</label> <br />
@@ -67,7 +67,7 @@
         type="number"
         name="anneeEdition"
         id="anneeEdition"
-        v-model="book.anneeEdition"
+        v-model="book.year"
         oninput="
         if (this.value.length > 4) {
           this.value = this.value.slice(0, 4)
@@ -90,41 +90,22 @@
 </template>
 
 <script setup>
-import axios from 'axios'
 import { ref } from 'vue'
+import {
+  getBookById,
+  getAuthorByName,
+  getEditorByName,
+  getCategoryByName,
+  putBook
+} from '../../service/Axios'
 
 const props = defineProps({
   id: Number
 })
 
-let token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNDEzNzYyOSwiZXhwIjoxNzQ1Njk1MjI5fQ.vRalmBymJvo8HAEe5JSgMdl_O-tRNuot2YjS-LXW4HI'
-
-let apiBook = await getBookById()
+let apiBook = await getBookById(props.id).then((response) => response.data.book)
 
 let book = ref({ ...apiBook })
-
-async function getBookById() {
-  return await axios
-    .get('http://localhost:3000/api/books' + props.id, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then((response) => response.data.data)
-}
-
-async function putBook(form) {
-  return await axios
-    .put('http://localhost:3000/api/books/' + props.id, formToJSON(form), {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then((response) => response.data.data)
-}
 
 async function onSubmit() {
   book.value.nmbPage = book.value.nmbPage.toString()

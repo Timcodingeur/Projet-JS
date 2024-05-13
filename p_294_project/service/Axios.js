@@ -12,37 +12,25 @@ async function getBooks() {
   })
 }
 
-async function AddBook(
-  titles,
-  extraits,
-  years,
-  editors,
-  categorys,
-  authors,
-  images,
-  resumes,
-  createds
-) {
-  return await axios.post(
-    'http://localhost:3000/api/books',
-    {
-      title: titles,
-      extrait: extraits,
-      year: years,
-      editor: editors,
-      category: categorys,
-      author: authors,
-      image: images,
-      resume: resumes,
-      created: createds
-    },
-    {
+async function getBookById(id) {
+  console.log(id)
+  return await axios.get('http://localhost:3000/api/books/' + id, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
+
+async function putBook(form) {
+  return await axios
+    .put('http://localhost:3000/api/books/' + props.id, formToJSON(form), {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`
       }
-    }
-  )
+    })
+    .then((response) => response.data.data)
 }
 
 async function DeleteBook(id) {
@@ -58,6 +46,15 @@ async function DeleteBook(id) {
       }
     }
   )
+}
+
+async function postBook(data) {
+  return await axios.post('http://localhost:3000/api/books', data, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
 }
 
 async function AddComment(comment, note, user, book) {
@@ -87,40 +84,66 @@ async function getCategories() {
   })
 }
 
-async function getEditorByName() {
+async function getEditorByName(name) {
   return await axios.get('http://localhost:3000/api/editors', {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     }
   })
+
+  const editors = response.data.data
+
+  for (const edit of editors) {
+    if (edit.name == name) {
+      return edit.id.toString()
+    }
+  }
 }
 
-async function getAuthorByName() {
+async function getAuthorByName(name) {
   return await axios.get('http://localhost:3000/api/authors', {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     }
   })
+
+  const authors = response.data.data
+
+  for (const auth of authors) {
+    if (auth.name == name) {
+      return auth.id.toString()
+    }
+  }
 }
 
-async function postBook(data) {
-  return await axios.post('http://localhost:3000/api/books', data, {
+async function getCategoryByName(name) {
+  const response = await axios.get('http://localhost:3000/api/categorys', {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     }
   })
+
+  const categories = response.data.data
+
+  for (const categ of categories) {
+    if (categ.name == name) {
+      return categ.id.toString()
+    }
+  }
 }
 
 export {
   getBooks,
-  AddBook,
-  DeleteBook,
-  AddComment,
+  getBookById,
   getCategories,
   getEditorByName,
   getAuthorByName,
-  postBook
+  getCategoryByName,
+  AddComment,
+  postBook,
+  putBook,
+  DeleteBook
 }
