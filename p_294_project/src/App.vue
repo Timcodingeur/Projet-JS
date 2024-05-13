@@ -12,6 +12,7 @@ import HelloWorld from './components/HelloWorld.vue'
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/login">Connexion</RouterLink>
         <RouterLink to="/addBook">Ajouer un livre</RouterLink>
         <RouterLink to="/modifyBook">Modifier un livre</RouterLink>
         <RouterLink to="/deleteBook">Supprimer un livre</RouterLink>

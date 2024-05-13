@@ -1,7 +1,17 @@
 import axios from 'axios'
+let token = ''
 
-let token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNDEzNzYyOSwiZXhwIjoxNzQ1Njk1MjI5fQ.vRalmBymJvo8HAEe5JSgMdl_O-tRNuot2YjS-LXW4HI'
+async function login(username, password) {
+  return await axios.post(
+    'http://localhost:3000/api/login',
+    { username, password },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+}
 
 async function getBooks() {
   return await axios.get('http://localhost:3000/api/books', {
@@ -35,12 +45,11 @@ async function putBook(form) {
 
 async function DeleteBook(id) {
   return await axios.delete('http://localhost:3000/api/books' + id, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
     }
-  )
+  })
 }
 
 async function postBook(data) {
@@ -140,5 +149,6 @@ export {
   AddComment,
   postBook,
   putBook,
-  DeleteBook
+  DeleteBook,
+  login
 }
