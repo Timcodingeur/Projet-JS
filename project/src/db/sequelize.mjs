@@ -72,10 +72,8 @@ const importBooks = () => {
   books.map((book) => {
     Book.create({
       title: book.title,
-<<<<<<< HEAD
       category: book.category,
       nmbPage: book.nmbPage,
-=======
       extrait: book.extrait,
       year: book.year,
       editor: book.editor,
@@ -83,7 +81,6 @@ const importBooks = () => {
       author: book.author,
       nmbPage: book.nmbPage,
       image: book.image,
->>>>>>> 9312d94a94d237faa82f71bd7bd16c96598df56b
       resume: book.resume,
       author: book.author,
       editor: book.editor,

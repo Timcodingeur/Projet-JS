@@ -54,10 +54,6 @@ export const BooksModel = (sequelize, DataTypes) => {
           },
         },
       },
-<<<<<<< HEAD
-=======
-
->>>>>>> 9312d94a94d237faa82f71bd7bd16c96598df56b
       author: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -70,32 +66,17 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-<<<<<<< HEAD
       year: {
         type: DataTypes.STRING,
         allowNull: true,
-=======
-
+      },
       category: {
         type: DataTypes.INTEGER,
         allowNull: false,
->>>>>>> 9312d94a94d237faa82f71bd7bd16c96598df56b
       },
       image: {
         type: DataTypes.STRING,
         allowNull: true,
-        /*validate: {
-          is: {
-            args: /^[^?!]+$/,
-            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
-          },
-          notEmpty: {
-            msg: "L'image ne peut pas être vide",
-          },
-          notNull: {
-            msg: "l'image est une propriété obligatoire",
-          },
-        },*/
       },
       extrait: {
         type: DataTypes.STRING,
