@@ -47,10 +47,14 @@ npm install axios --save
 
 Le projet "Passion Lecture" est développé selon les exigences suivantes :
 
-* Objectif : Développer une API REST backend exploitable et professionnelle pour une application de partage de lectures.
-* Fonctionnalités : Gestion des livres, catégories, utilisateurs, authentification JWT, documentation Swagger, tests automatiques, et "dockerisation" (optionnel).
-* Technologies : Utilisation de Node.js, Express.js, Sequelize, MySQL, et Swagger.
-* Travail d'équipe : Projet réalisé par notre groupe de 5, avec une gestion collaborative via GitHub.
+* Objectif : Développer le frontend avec notre API fait le trimestre précedent.
+* Fonctionnalités : L'utilisateur peut faire les actions CRUD sur les livres et ajouter un commentaire.
+* Technologies : Utilisation de Vue.js.
+* Travail d'équipe : Projet commencé à 5 puis le group s'est restreint à 4 membres.
+
+## Requis
+
+Le seul requis est le fait d'avoir fait le projet 295 avec l'API. On utilise cet même API pour communiquer avec la base de données.
 
  ## Interface
 
