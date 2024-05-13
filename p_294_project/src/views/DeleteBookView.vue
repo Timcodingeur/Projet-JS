@@ -1,59 +1,41 @@
 <template>
-  <div class="addBook">
-    <form @submit.prevent="onSubmit">
-      <input type="text" name="text" class="search" placeholder="Recherchez ici!" /> <br />
-      <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="titre" /> <br />
-
-      <input type="submit" value="Submit" />
-    </form>
+  <div>
+    <!-- Textarea pour saisir l'ID du livre -->
+    <textarea v-model="inputBookId" placeholder="supprime ou je te supprime"></textarea>
+    <button @click="deleteBook">Clique ou je te clique</button>
   </div>
 </template>
 
 <script setup>
-let titre = ''
+import { ref } from 'vue'
+import axios from 'axios'
 
-function checkForm() {
-  //detecter que ce que le user a chercher fait pas trops de caractère
-}
+// Champ pour l'ID du livre saisi dans le `textarea`
+const inputBookId = ref('')
+const bearerToken =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcxNDEzOTA2MywiZXhwIjoxNzQ1Njk2NjYzfQ.Jij32qCOGqXA8YrWYe-De22vMJwo9f1eEfPu8JFu920'
 
-function onSubmit() {
-  let book = {
-    title: titre,
-    created: new Date()
+async function deleteBook() {
+  const bookId = parseInt(inputBookId.value.trim(), 10)
+
+  // Vérifiez que l'ID est un nombre valide
+  if (isNaN(bookId) || bookId <= 0) {
+    console.error('je vais te taper avec cette id')
+    return
   }
-
-  titre = ''
-}
-
-async function fetchBooks() {
-  const params = {
-    titre,
-    nmbPage,
-    nomAuteur,
-    prenomAuteur,
-    nomEditeur,
-    anneeEdition
-  }
-
-  Object.keys(params).forEach((key) => params[key] === '' && delete params[key])
 
   try {
-    const response = await axios.get('http://localhost:3000/api/books', {
-      params,
+    const response = await axios.delete(`http://localhost:3000/api/books/${bookId}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${bearerToken}`
       }
     })
-    console.log('Livres trouvés:', response.data)
-    return response.data // Ajout de cette ligne pour renvoyer les données
+    console.log('Livre supprimé:', response.data)
+    // Réinitialisez le champ textarea après suppression
+    inputBookId.value = ''
   } catch (error) {
-    console.error('Erreur lors de la recherche des livres:', error)
-    return null // Renvoyer null ou une valeur par défaut en cas d'erreur
+    console.error('Erreur lors de la suppression du livre:', error)
   }
 }
-
-//faire un delet (pour supp le livre)
-//
 </script>

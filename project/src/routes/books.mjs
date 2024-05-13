@@ -1,9 +1,11 @@
+// Importez les modules requis et configurez l'authentification
 import express from "express";
 import { Author, Book, Category, Editor, Comment } from "../db/sequelize.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
 import multer from "multer";
+import accentFold from "accent-fold";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,7 +19,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const booksRouter = express();
-
 /**
  * @swagger
  * /api/books/:
@@ -72,63 +73,124 @@ const booksRouter = express();
  *                      description: The book's resume
  *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
  */
+// Route GET /books
 booksRouter.get("/", auth, async (req, res) => {
   try {
-    let Books;
-    if (req.query.title) {
-      if (req.query.title.length < 4) {
-        const message = `Le terme de la recherche doit contenir au moins 4 caractères.`;
-        return res.status(400).json({ message });
-      }
-      let limit = 6;
-      if (req.query.limit) {
-        limit = parseInt(req.query.limit, 10);
-      }
-      Books = await Book.findAll({
-        where: { title: { [Op.like]: `%${req.query.title}%` } },
-        order: ["title"],
-        limit: limit,
-      });
-    } else {
-      Books = await Book.findAll({ order: ["title"] });
+    const {
+      title,
+      categoryName,
+      nmbPage,
+      nomAuteur,
+      prenomAuteur,
+      nomEditeur,
+      anneeEdition,
+    } = req.query;
+
+    let queryConditions = {};
+    let include = [];
+    // Critères de recherche avancée
+    if (title && title.length >= 2) {
+      queryConditions.title = {
+        [Op.like]: `%${accentFold(title)}%`,
+      };
     }
 
-    // Récupérer les détails en parallèle pour chaque livre
+    if (categoryName) {
+      queryConditions["$category.name$"] = {
+        [Op.like]: `%${accentFold(categoryName)}%`,
+      };
+    }
+
+    if (nmbPage) {
+      queryConditions.nmbPage = nmbPage;
+    }
+
+    if (anneeEdition) {
+      queryConditions.year = anneeEdition;
+    }
+
+    // Limite de résultats
+    let limit = req.query.limit ? parseInt(req.query.limit, 10) : 6;
+    let Books = await Book.findAll({
+      where: queryConditions,
+      include: include,
+      order: ["title"],
+      limit: limit,
+    });
+
+    // Récupération des détails des livres
     const detailedBooks = await Promise.all(
       Books.map(async (book) => {
-        const [author, editor, category] = await Promise.all([
+        const [author, editor, category, comments] = await Promise.all([
           Author.findByPk(book.author),
           Editor.findByPk(book.editor),
           Category.findByPk(book.category),
+          Comment.findAll({
+            where: { book: book.id },
+            attributes: ["id", "comment", "note"],
+          }),
         ]);
+        if (
+          nomAuteur &&
+          (!author ||
+            !accentFold(author.lastname)
+              .toLowerCase()
+              .includes(accentFold(nomAuteur).toLowerCase()))
+        )
+          return null;
 
+        if (
+          prenomAuteur &&
+          (!author ||
+            !accentFold(author.firstname)
+              .toLowerCase()
+              .includes(accentFold(prenomAuteur).toLowerCase()))
+        )
+          return null;
+
+        if (
+          nomEditeur &&
+          (!editor ||
+            !accentFold(editor.nameEdit)
+              .toLowerCase()
+              .includes(accentFold(nomEditeur).toLowerCase()))
+        )
+          return null;
         return {
           id: book.id,
           title: book.title,
           extrait: book.extrait,
           resume: book.resume,
           year: book.year,
-          author: {
-            id: author.id,
-            firstname: author.firstname,
-            lastname: author.lastname,
-            created: author.created,
-            updatedAt: author.updatedAt,
-          },
-          editor: {
-            id: editor.id,
-            nameEdit: editor.nameEdit,
-            created: editor.created,
-            updatedAt: editor.updatedAt,
-          },
-          category: {
-            id: category.id,
-            name: category.name,
-            created: category.created,
-            updatedAt: category.updatedAt,
-          },
+          nmbPage: book.nmbPage,
+          author: author
+            ? {
+                id: author.id,
+                firstname: author.firstname,
+                lastname: author.lastname,
+                created: author.created,
+                updatedAt: author.updatedAt,
+              }
+            : null, // Gestion de la valeur null
+          editor: editor
+            ? {
+                id: editor.id,
+                nameEdit: editor.nameEdit,
+                created: editor.created,
+                updatedAt: editor.updatedAt,
+              }
+            : null, // Gestion de la valeur null
+          category: category
+            ? {
+                id: category.id,
+                name: category.name,
+                created: category.created,
+                updatedAt: category.updatedAt,
+              }
+            : null, // Gestion de la valeur null
           image: book.image,
           created: book.created,
+          comments: comments,
         };
       })
     );
@@ -136,7 +198,7 @@ booksRouter.get("/", auth, async (req, res) => {
     const message = `Informations complètes sur les livres récupérées avec succès.`;
     res.json({ message, books: detailedBooks });
   } catch (error) {
-    console.error("Error while fetching books:", error);
+    console.error("Erreur serveur :", error);
     res
       .status(500)
       .json({ message: "Erreur serveur", error: error.toString() });
