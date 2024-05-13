@@ -1,6 +1,6 @@
 <template>
   <div class="addBook">
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" id="form">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
       <input type="text" name="titre" id="titre" v-model="book.titre" maxlength="60" /> <br />
@@ -23,30 +23,20 @@
         name="nmbPage"
         id="nmbPage"
         v-model.number="book.nmbPage"
-        oninput="
-        if (this.value.length > 4) {
+        min="1"
+        oninput="if (this.value.length > 4) {
           this.value = this.value.slice(0, 4)
-        }
-        if (parseInt(this.value) <= 0) {
-          this.value = 1
         }"
       />
       <br />
 
       <!-- Pour un extrait -->
       <label for="extrait">Extrait :</label> <br />
-      <input type="url" name="extrait" id="extrait" v-model="book.extrait" /> <br />
+      <input type="file" name="extrait" id="extrait" accept=".pdf" @change="handleFile" /> <br />
 
       <!-- Un résumé de l'ouvrage -->
       <label for="resume">Résumé de l'ouvrage</label> <br />
-      <textarea
-        name="resume"
-        id="resume"
-        cols="40"
-        rows="5"
-        v-model="book.resume"
-        maxlength="1024"
-      ></textarea>
+      <textarea name="resume" id="resume" cols="40" rows="5" v-model="book.resume"></textarea>
       <br />
 
       <!-- Le nom et le prénom de l'écrivain -->
@@ -68,13 +58,7 @@
         name="anneeEdition"
         id="anneeEdition"
         v-model="book.anneeEdition"
-        oninput="
-        if (this.value.length > 4) {
-          this.value = this.value.slice(0, 4)
-        }
-        if (this.value <= 0) {
-          this.value = 1
-        }"
+        max="2024"
       />
       <br />
 
@@ -90,18 +74,18 @@
 </template>
 
 <script setup>
-import axios, { formToJSON } from 'axios'
+import axios from 'axios'
 import { ref } from 'vue'
 
 let book = ref({
   titre: '',
   categorie: '',
-  nmbPage: null,
+  nmbPage: 1,
   resume: '',
   nomAuteur: '',
   prenomAuteur: '',
   nomEditeur: '',
-  anneeEdition: null,
+  anneeEdition: '',
   image: null,
   extrait: null
 })
@@ -109,7 +93,7 @@ let book = ref({
 let token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNDEzNzYyOSwiZXhwIjoxNzQ1Njk1MjI5fQ.vRalmBymJvo8HAEe5JSgMdl_O-tRNuot2YjS-LXW4HI'
 
-function handleImage(e) {
+async function handleImage(e) {
   let file = e.target.files[0]
   let accceptedType = ['image/png', 'image/jpg']
 
@@ -120,38 +104,13 @@ function handleImage(e) {
   book.value.image = file
 }
 
-async function getCategoryByName(name) {
-  const response = await axios.get('http://localhost:3000/api/categorys', {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-  const categories = response.data.data
-
-  for (const categ of categories) {
-    if (categ.name == name) {
-      return categ.id.toString()
-    }
+async function handleFile(e) {
+  let file = e.target.files[0]
+  if (file.type != 'application/pdf') {
+    alert('The wrong type of image is choose')
+    return
   }
-}
-
-async function getEditorByName(name) {
-  const response = await axios.get('http://localhost:3000/api/editors', {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-  const editors = response.data.data
-
-  for (const edit of editors) {
-    if (edit.nameEdit == name) {
-      return edit.id.toString()
-    }
-  }
+  book.value.extrait = file
 }
 
 async function getAuthorByName(firstname, lastname) {
@@ -166,102 +125,46 @@ async function getAuthorByName(firstname, lastname) {
 
   for (const auth of authors) {
     if (auth.firstname == firstname && auth.lastname == lastname) {
-      return auth.id.toString()
+      return auth.id
     }
   }
 }
 
-async function postBook(form) {
-  return await axios
-    .post('http://localhost:3000/api/books', formToJSON(form), {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then((response) => response.data)
-}
-
 async function onSubmit() {
-  book.value.nmbPage = book.value.nmbPage.toString()
-  book.value.anneeEdition = book.value.anneeEdition.toString()
-
-  if (book.value.titre.trim().length == 0) {
+  if (book.value.titre == '') {
     alert(`The input titre du livre cannot be empty`)
-    return
-  } else if (book.value.categorie.trim().length == 0) {
+  } else if (book.value.categorie == '') {
     alert(`The input catégorie cannot be empty`)
-    return
-  } else if (book.value.nmbPage.trim().length == 0) {
+  } else if (book.value.nmbPage == '') {
     alert(`The input nombre de page cannot be empty`)
-    return
-  } else if (book.value.extrait.trim().length == 0) {
-    alert(`The input extrait cannot be empty`)
-    return
-  } else if (book.value.resume.trim().length == 0) {
+  } else if (book.value.resume == '') {
     alert(`The input resume cannot be empty`)
-    return
-  } else if (book.value.nomAuteur.trim().length == 0) {
+  } else if (book.value.nomAuteur == '') {
     alert(`The input nom de l'auteur cannot be empty`)
-    return
-  } else if (book.value.nomEditeur.trim().length == 0) {
+  } else if (book.value.nomEditeur == '') {
     alert(`The input nom de l'éditeur cannot be empty`)
-    return
-  } else if (book.value.prenomAuteur.trim().length == 0) {
+  } else if (book.value.prenomAuteur == '') {
     alert(`The input prénom de l'auteur cannot be empty`)
-    return
-  } else if (book.value.anneeEdition.trim().length == 0) {
+  } else if (book.value.anneeEdition == '') {
     alert(`The input annee de l'édition cannot be empty`)
-    return
-  }
-
-  let authorId = await getAuthorByName(book.value.prenomAuteur, book.value.nomAuteur)
-
-  let editorId = await getEditorByName(book.value.nomEditeur)
-
-  let categoryId = await getCategoryByName(book.value.categorie)
-
-  book.value.extrait = book.value.extrait.toString()
-
-  if (authorId == undefined) {
-    alert(`L'auteur n'existe pas`)
-    return
-  }
-
-  if (editorId == undefined) {
-    alert(`L'éditeur n'existe pas`)
-    return
   }
 
   let form = new FormData()
 
-  form.set('title', book.value.titre.trimStart().trimEnd())
-  form.set('category', parseInt(categoryId.trimStart().trimEnd()))
-  form.set('nmbPage', parseInt(book.value.nmbPage.trimStart().trimEnd()))
-  form.set('extrait', book.value.extrait.trimStart().trimEnd())
-  form.set('resume', book.value.resume.trimStart().trimEnd())
-  form.set('author', parseInt(authorId.trimStart().trimEnd()))
-  form.set('editor', parseInt(editorId.trimStart().trimEnd()))
-  form.set("annee de l'edition", parseInt(book.value.anneeEdition.trimStart().trimEnd()))
-  form.set('image', book.value.image)
+  form.append('titre', book.value.titre)
+  form.append('categorie', book.value.categorie)
+  form.append('nombre de page', book.value.nmbPage)
+  form.append("nom de l'auteur", book.value.nomAuteur)
+  form.append("prenom de l'auteur", book.value.prenomAuteur)
+  form.append("nom de l'editeur", book.value.nomEditeur)
+  form.append("annee de l'edition", book.value.anneeEdition)
+  form.append('fichiers', [book.value.extrait, book.value.image])
 
-  postBook(form)
-
-  book.value.titre = ''
-  book.value.categorie = ''
-  book.value.nmbPage = ''
-  book.value.resume = ''
-  book.value.nomAuteur = ''
-  book.value.prenomAuteur = ''
-  book.value.nomEditeur = ''
-  book.value.anneeEdition = ''
-  book.value.image = null
-  book.value.extrait = ''
+  let data = await getAuthorByName(prenomAuteur, nomAuteur)
 }
 </script>
 
-<style scoped>
+<style>
 form {
   max-width: 500px;
   margin: 0 auto;
@@ -274,7 +177,6 @@ label {
 input[type='text'],
 input[type='number'],
 input[type='date'],
-input[type='url'],
 select,
 textarea {
   width: 100%;
