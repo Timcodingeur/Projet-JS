@@ -34,12 +34,7 @@ async function putBook(form) {
 }
 
 async function DeleteBook(id) {
-  return await axios.delete(
-    'http://localhost:3000/api/books',
-    {
-      id: id
-    },
-    {
+  return await axios.delete('http://localhost:3000/api/books' + id, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
