@@ -14,9 +14,10 @@ const router = createRouter({
       component: () => import('../views/AddBookView.vue')
     },
     {
-      path: '/modifyBook',
+      path: '/modifyBook/:id',
       name: 'modifyBook',
-      component: () => import('../views/ModifyBookView.vue')
+      component: () => import('../views/ModifyBookView.vue'),
+      props: true
     },
     {
       path: '/deleteBook',

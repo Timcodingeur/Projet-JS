@@ -109,7 +109,6 @@ booksRouter.get("/", auth, async (req, res) => {
     let Books = await Book.findAll({
       where: queryConditions,
       include: include,
-      order: ["title"],
       limit: limit,
     });
 
@@ -292,7 +291,7 @@ booksRouter.get("/:id", auth, async (req, res) => {
     const bookId = req.params.id;
     const book = await Book.findByPk(bookId);
 
-    if (book === null) {
+    if (!book) {
       return res.status(404).json({
         message:
           "Le livre demandé n'existe pas. Merci d'essayer un autre identifiant.",
@@ -306,7 +305,7 @@ booksRouter.get("/:id", auth, async (req, res) => {
       Category.findByPk(book.category),
       Comment.findAll({
         where: { book: bookId },
-        attributes: ["id", "comment", "note"], // Sélection limitée aux ID des commentaires et aux notes
+        attributes: ["id", "comment", "note"],
       }),
     ]);
 
@@ -317,25 +316,32 @@ booksRouter.get("/:id", auth, async (req, res) => {
       extrait: book.extrait,
       resume: book.resume,
       year: book.year,
-      author: {
-        id: author.id,
-        firstname: author.firstname,
-        lastname: author.lastname,
-        created: author.created,
-        updatedAt: author.updatedAt,
-      },
-      editor: {
-        id: editor.id,
-        nameEdit: editor.nameEdit,
-        created: editor.created,
-        updatedAt: editor.updatedAt,
-      },
-      category: {
-        id: category.id,
-        name: category.name,
-        created: category.created,
-        updatedAt: category.updatedAt,
-      },
+      nmbPage: book.nmbPage,
+      author: author
+        ? {
+            id: author.id,
+            firstname: author.firstname,
+            lastname: author.lastname,
+            created: author.created,
+            updatedAt: author.updatedAt,
+          }
+        : null,
+      editor: editor
+        ? {
+            id: editor.id,
+            nameEdit: editor.nameEdit,
+            created: editor.created,
+            updatedAt: editor.updatedAt,
+          }
+        : null,
+      category: category
+        ? {
+            id: category.id,
+            name: category.name,
+            created: category.created,
+            updatedAt: category.updatedAt,
+          }
+        : null,
       image: book.image,
       created: book.created,
       comments: comments, // Ajout des commentaires avec juste l'ID et la note
@@ -404,25 +410,46 @@ booksRouter.post("/", auth, upload.array("fichiers", 2), (req, res) => {
     });
 });
 
-booksRouter.put("/:id", auth, (req, res) => {
-  const BookId = req.params.id;
-  Book.update(req.body, { where: { id: BookId } })
-    .then((_) => {
-      return Book.findByPk(BookId).then((updateBook) => {
-        if (updateBook === null) {
-          const message =
-            "Le livre demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
-          return res.status(404).json({ message });
-        }
-        const message = `Le livre ${updateBook.title} a bien été modifié`;
-        res.json(sucess(message, updateBook));
-      });
-    })
-    .catch((error) => {
-      const message =
-        "Le livre n'a pas pu être mis à jour. Merci de réessayer dans quelques instants.";
-      res.status(500).json({ message, data: error });
-    });
+// booksRouter.js
+// booksRouter.js
+booksRouter.put("/:id", auth, async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const {
+      title,
+      extrait,
+      resume,
+      year,
+      nmbPage,
+      author,
+      editor,
+      category,
+      image,
+    } = req.body;
+
+    const book = await Book.findByPk(bookId);
+    if (!book) {
+      return res.status(404).json({ message: "Livre non trouvé" });
+    }
+
+    book.title = title;
+    book.extrait = extrait;
+    book.resume = resume;
+    book.year = year;
+    book.nmbPage = nmbPage;
+    book.author = author;
+    book.editor = editor;
+    book.category = category;
+    book.image = image;
+
+    await book.save();
+    res.status(200).json({ message: "Livre mis à jour avec succès", book });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du livre:", error);
+    res
+      .status(500)
+      .json({ message: "Erreur serveur", error: error.toString() });
+  }
 });
 
 booksRouter.delete("/:id", auth, (req, res) => {

@@ -36,38 +36,119 @@
       <input type="submit" value="Submit" />
     </form>
 
-    <div v-for="book in books" :key="book.id">
+    <div v-for="book in filteredBooks" :key="book.id">
       <h3>{{ book.title }}</h3>
       <button @click="selectBook(book.id)">Voir détails</button>
+    </div>
+
+    <!-- Fenêtre modale pour afficher les détails du livre -->
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="closeModal">&times;</span>
+        <div v-if="bookDetails">
+          <h2>{{ bookDetails.title }}</h2>
+          <p><strong>Extrait :</strong> {{ bookDetails.extrait }}</p>
+          <p><strong>Résumé :</strong> {{ bookDetails.resume }}</p>
+          <p><strong>Année :</strong> {{ bookDetails.year }}</p>
+          <p><strong>Nombre de pages :</strong> {{ bookDetails.nmbPage }}</p>
+          <p>
+            <strong>Auteur :</strong>
+            {{
+              bookDetails.author
+                ? bookDetails.author.firstname + ' ' + bookDetails.author.lastname
+                : 'N/A'
+            }}
+          </p>
+          <p>
+            <strong>Éditeur :</strong>
+            {{ bookDetails.editor ? bookDetails.editor.nameEdit : 'N/A' }}
+          </p>
+          <p>
+            <strong>Catégorie :</strong>
+            {{ bookDetails.category ? bookDetails.category.name : 'N/A' }}
+          </p>
+          <img v-if="bookDetails.image" :src="bookDetails.image" alt="Image du livre" />
+          <div v-if="bookDetails.comments && bookDetails.comments.length">
+            <h3>Commentaires</h3>
+            <ul>
+              <li v-for="comment in bookDetails.comments" :key="comment.id">
+                {{ comment.comment }} - Note: {{ comment.note }}
+              </li>
+            </ul>
+          </div>
+          <button @click="confirmDeleteBook(bookDetails.id)">Supprimer</button>
+          <button @click="modifyBook(bookDetails.id)">Modifier</button>
+          <button @click="showCommentForm = true">Ajouter un commentaire</button>
+
+          <!-- Formulaire d'ajout de commentaire -->
+          <div v-if="showCommentForm" class="addReview">
+            <form @submit.prevent="addComment(bookDetails.id)">
+              <label for="comment">Commentaire :</label> <br />
+              <textarea name="comment" id="comment" cols="40" rows="5" v-model="comment"></textarea>
+              <br />
+              <label for="note">Note</label> <br />
+              <select name="note" id="note" v-model="note">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+              <br />
+              <input type="submit" value="Submit" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boîte de dialogue de confirmation -->
+    <div v-if="showConfirmDialog" class="confirm-dialog">
+      <div class="confirm-dialog-content">
+        <p>Êtes-vous sûr de vouloir supprimer ce livre ?</p>
+        <button @click="deleteBook(selectedBookId)">Oui</button>
+        <button @click="showConfirmDialog = false">Non</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 
-let titre = ''
-let categoryName = ''
-let nmbPage = ''
-let nomAuteur = ''
-let prenomAuteur = ''
-let nomEditeur = ''
-let anneeEdition = ''
-let selectedBookId = ''
-let books = []
-let bookDetails = null
+const router = useRouter()
+
+const titre = ref('')
+const categoryName = ref('')
+const nmbPage = ref('')
+const nomAuteur = ref('')
+const prenomAuteur = ref('')
+const nomEditeur = ref('')
+const anneeEdition = ref('')
+const selectedBookId = ref('')
+const books = ref([])
+const bookDetails = ref(null)
+const showModal = ref(false)
+const showConfirmDialog = ref(false)
+const showCommentForm = ref(false)
+const comment = ref('')
+const note = ref('5')
 const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcxNDEzOTA2MywiZXhwIjoxNzQ1Njk2NjYzfQ.Jij32qCOGqXA8YrWYe-De22vMJwo9f1eEfPu8JFu920'
 
+const filteredBooks = computed(() => books.value.filter((book) => book !== null))
+
 async function fetchBooks() {
   const params = {
-    title: titre,
-    categoryName,
-    nomAuteur,
-    prenomAuteur,
-    nomEditeur,
-    anneeEdition: anneeEdition.toString(), // Assurez-vous que c'est une chaîne si nécessaire
-    nmbPage: nmbPage.toString() // Assurez-vous que c'est une chaîne si nécessaire
+    title: titre.value,
+    categoryName: categoryName.value,
+    nomAuteur: nomAuteur.value,
+    prenomAuteur: prenomAuteur.value,
+    nomEditeur: nomEditeur.value,
+    anneeEdition: anneeEdition.value.toString(),
+    nmbPage: nmbPage.value.toString()
   }
 
   Object.keys(params).forEach((key) => {
@@ -84,62 +165,94 @@ async function fetchBooks() {
         Authorization: `Bearer ${token}`
       }
     })
-    books = response.data.books || []
-    console.log('Livres trouvés:', books)
-    return books
+    books.value = response.data.books.filter((book) => book !== null) || []
+    console.log('Livres trouvés:', books.value)
   } catch (error) {
     console.error('Erreur lors de la recherche des livres:', error)
-    return []
   }
 }
 
-async function fetchBookById() {
-  if (!selectedBookId) {
-    console.error('Aucun ID de livre sélectionné')
-    return
-  }
-
+async function fetchBookById(id) {
   try {
-    const response = await axios.get(`http://localhost:3000/api/books/${selectedBookId}`, {
+    const response = await axios.get(`http://localhost:3000/api/books/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       }
     })
-    bookDetails = response.data
-    console.log('Détails du livre:', bookDetails)
-    return bookDetails
+    bookDetails.value = response.data.book // Correction ici
+    console.log('Détails du livre:', bookDetails.value)
+    showModal.value = true
   } catch (error) {
     console.error('Erreur lors de la récupération des détails du livre:', error)
-    return null
   }
 }
 
 async function onSubmit() {
-  try {
-    await fetchBooks()
-  } catch (error) {
-    console.error("Erreur lors de l'obtention des livres:", error)
-  }
+  await fetchBooks()
 }
 
 function selectBook(id) {
-  selectedBookId = id
-  fetchBookById().then((details) => {
-    // Afficher les détails ici ou les manipuler selon besoin
-    console.log(details)
-  })
+  fetchBookById(id)
 }
 
-function resetFields() {
-  titre = ''
-  nmbPage = ''
-  nomAuteur = ''
-  prenomAuteur = ''
-  nomEditeur = ''
-  anneeEdition = ''
-  selectedBookId = ''
-  bookDetails = null
+function closeModal() {
+  showModal.value = false
+  showCommentForm.value = false
+}
+
+function confirmDeleteBook(id) {
+  selectedBookId.value = id
+  showConfirmDialog.value = true
+}
+
+async function deleteBook(id) {
+  try {
+    await axios.delete(`http://localhost:3000/api/books/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    books.value = books.value.filter((book) => book.id !== id)
+    closeModal()
+    showConfirmDialog.value = false
+  } catch (error) {
+    console.error('Erreur lors de la suppression du livre:', error)
+  }
+}
+
+async function addComment(bookId) {
+  try {
+    const response = await axios.post(
+      'http://localhost:3000/api/comments',
+      {
+        comment: comment.value,
+        note: note.value,
+        user: 1, // quentin fini
+        book: bookId
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    console.log('Commentaire ajouté:', response.data)
+    fetchBookById(bookId)
+    showCommentForm.value = false
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du commentaire:", error)
+  }
+}
+
+function modifyBook(id) {
+  if (id) {
+    router.push({ name: 'modifyBook', params: { id } })
+  } else {
+    console.error('ID de livre invalide')
+  }
 }
 </script>
 
@@ -196,5 +309,63 @@ input:invalid,
 select:invalid,
 textarea:invalid {
   border-color: red;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.confirm-dialog {
+  display: block;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding-top: 60px;
+}
+
+.confirm-dialog-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  text-align: center;
 }
 </style>
