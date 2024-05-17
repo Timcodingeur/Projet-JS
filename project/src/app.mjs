@@ -22,6 +22,8 @@ import swaggerUi from "swagger-ui-express";
 
 import { swaggerSpec } from "./swagger.mjs";
 
+import serveStatic from "serveStatic";
+
 const app = express();
 
 app.use(express.json());
@@ -29,6 +31,8 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 const port = 3000;
+
+var serve = serveStatic("images/");
 
 app.use(
   "/api-docs",
@@ -66,6 +70,9 @@ app.use("/api/authors", authorsRouter);
 app.use("/api/categorys", categorysRouter);
 
 app.use("/api/login", loginRouter);
+
+app.use("/images", express.static("images"));
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
@@ -75,3 +82,9 @@ app.use(({ res }) => {
     "Impossible de trouver la ressource demandée ! Vous pouvez essayer une autre URL.";
   res.status(404).json(message);
 });
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, { explorer: true })
+);
