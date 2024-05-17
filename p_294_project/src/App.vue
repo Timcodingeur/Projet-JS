@@ -3,18 +3,17 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
+  <header id="header">
+    <nav>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/addBook">Ajouer un livre</RouterLink>
+      <RouterLink to="/modifyBook">Modifier un livre</RouterLink>
+      <RouterLink to="/deleteBook">Supprimer un livre</RouterLink>
+      <RouterLink to="/addComment">Ajouter un commentaire</RouterLink>
+      <RouterLink to="/getBook">Rechercher des livres via des paramètres</RouterLink>
+    </nav>
+  </header>
   <div id="main">
-    <div id="header">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/addBook">Ajouer un livre</RouterLink>
-        <RouterLink to="/modifyBook">Modifier un livre</RouterLink>
-        <RouterLink to="/deleteBook">Supprimer un livre</RouterLink>
-        <RouterLink to="/addComment">Ajouter un commentaire</RouterLink>
-        <RouterLink to="/getBook">Rechercher des livres via des paramètres</RouterLink>
-        <RouterLink to="/SeeBook">Voir tout les livres</RouterLink>
-      </nav>
-    </div>
     <div id="content">
       <RouterView />
     </div>
@@ -34,8 +33,8 @@ import { RouterLink, RouterView } from 'vue-router'
 }
 
 #header {
-  position: fixed;
-  top: 0;
+  display: flex;
+  align-items: center;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   border: 1px solid #a2a2a2;
@@ -52,7 +51,8 @@ nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
+  margin: 0, 0, 0, 0;
+  padding: 0, 0, 0, 0;
 }
 
 nav a.router-link-exact-active:hover {
@@ -63,32 +63,5 @@ nav a {
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
-}
-
-@media (min-width: 1024px) {
-  #header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  #header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: 1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
 }
 </style>
