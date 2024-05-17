@@ -56,6 +56,7 @@
 import axios from 'axios'
 
 let titre = ''
+let categoryName = ''
 let nmbPage = ''
 let nomAuteur = ''
 let prenomAuteur = ''
@@ -71,6 +72,7 @@ let suggestion = ['test', 'test2']
 async function fetchBooks() {
   const params = {
     title: titre,
+    categoryName,
     nomAuteur,
     prenomAuteur,
     nomEditeur,

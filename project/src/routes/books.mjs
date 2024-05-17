@@ -1,6 +1,6 @@
 // Importez les modules requis et configurez l'authentification
 import express from "express";
-import { Author, Book, Category, Editor, Comment } from "../db/sequelize.mjs";
+import { Book, Author, Editor, Category, Comment } from "../models/index.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const booksRouter = express();
+
+// Route GET /books
 /**
  * @swagger
  * /api/books/:
@@ -73,7 +75,6 @@ const booksRouter = express();
  *                      description: The book's resume
  *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
  */
-// Route GET /books
 booksRouter.get("/", auth, async (req, res) => {
   try {
     const {
@@ -92,12 +93,6 @@ booksRouter.get("/", auth, async (req, res) => {
     if (title && title.length >= 2) {
       queryConditions.title = {
         [Op.like]: `%${accentFold(title)}%`,
-      };
-    }
-
-    if (categoryName) {
-      queryConditions["$category.name$"] = {
-        [Op.like]: `%${accentFold(categoryName)}%`,
       };
     }
 
@@ -122,7 +117,7 @@ booksRouter.get("/", auth, async (req, res) => {
     const detailedBooks = await Promise.all(
       Books.map(async (book) => {
         const [author, editor, category, comments] = await Promise.all([
-          Author.findByPk(book.author),
+          Author.findByPk(book.author + 1),
           Editor.findByPk(book.editor),
           Category.findByPk(book.category),
           Comment.findAll({
@@ -136,6 +131,14 @@ booksRouter.get("/", auth, async (req, res) => {
             !accentFold(author.lastname)
               .toLowerCase()
               .includes(accentFold(nomAuteur).toLowerCase()))
+        )
+          return null;
+        if (
+          categoryName &&
+          (!category ||
+            !accentFold(category.name)
+              .toLowerCase()
+              .includes(accentFold(categoryName).toLowerCase()))
         )
           return null;
 
