@@ -91,19 +91,13 @@
 
 <script setup>
 import { ref } from 'vue'
-import {
-  getBookById,
-  getAuthorByName,
-  getEditorByName,
-  getCategoryByName,
-  putBook
-} from '../../service/Axios'
+import api from '@/service/Axios.js'
 
 const props = defineProps({
   id: Number
 })
 
-let apiBook = await getBookById(props.id).then((response) => response.data.book)
+let apiBook = await api.getBookById(props.id).then((response) => response.data.data)
 
 let book = ref({ ...apiBook })
 
@@ -140,11 +134,11 @@ async function onSubmit() {
     return
   }
 
-  let authorId = await getAuthorByName(book.value.prenomAuteur, book.value.nomAuteur)
+  let authorId = await api.getAuthorByName(book.value.prenomAuteur + ' ' + book.value.nomAuteur)
 
-  let editorId = await getEditorByName(book.value.nomEditeur)
+  let editorId = await api.getEditorByName(book.value.nomEditeur)
 
-  let categoryId = await getCategoryByName(book.value.categorie)
+  let categoryId = await api.getCategoryByName(book.value.categorie)
 
   book.value.extrait = book.value.extrait.toString()
 
@@ -171,7 +165,7 @@ async function onSubmit() {
   form.set('year', book.value.year)
   form.set('image', book.value.image)
 
-  putBook(form)
+  api.putBook(props.id, form)
 
   book.value.titre = ''
   book.value.categorie = ''

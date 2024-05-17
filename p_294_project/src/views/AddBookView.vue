@@ -92,7 +92,7 @@
 <script setup>
 import axios, { formToJSON } from 'axios'
 import { ref } from 'vue'
-import { getCategoryByName } from '../../service/Axios'
+import api from '@/service/Axios.js'
 
 let book = ref({
   titre: '',
@@ -107,9 +107,6 @@ let book = ref({
   extrait: null
 })
 
-let token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNDEzNzYyOSwiZXhwIjoxNzQ1Njk1MjI5fQ.vRalmBymJvo8HAEe5JSgMdl_O-tRNuot2YjS-LXW4HI'
-
 function handleImage(e) {
   let file = e.target.files[0]
   let accceptedType = ['image/png', 'image/jpg']
@@ -119,52 +116,6 @@ function handleImage(e) {
     return
   }
   book.value.image = file
-}
-
-async function getEditorByName(name) {
-  const response = await axios.get('http://localhost:3000/api/editors', {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-  const editors = response.data.data
-
-  for (const edit of editors) {
-    if (edit.nameEdit == name) {
-      return edit.id.toString()
-    }
-  }
-}
-
-async function getAuthorByName(firstname, lastname) {
-  const response = await axios.get('http://localhost:3000/api/authors', {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-  const authors = response.data.data
-
-  for (const auth of authors) {
-    if (auth.firstname == firstname && auth.lastname == lastname) {
-      return auth.id.toString()
-    }
-  }
-}
-
-async function postBook(form) {
-  return await axios
-    .post('http://localhost:3000/api/books', formToJSON(form), {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then((response) => response.data)
 }
 
 async function onSubmit() {
@@ -200,11 +151,11 @@ async function onSubmit() {
     return
   }
 
-  let authorId = await getAuthorByName(book.value.prenomAuteur, book.value.nomAuteur)
+  let authorId = await api.getAuthorByName(book.value.prenomAuteur + ' ' + book.value.nomAuteur)
 
-  let editorId = await getEditorByName(book.value.nomEditeur)
+  let editorId = await api.getEditorByName(book.value.nomEditeur)
 
-  let categoryId = await getCategoryByName(book.value.categorie)
+  let categoryId = await api.getCategoryByName(book.value.categorie)
 
   book.value.extrait = book.value.extrait.toString()
 
@@ -231,7 +182,7 @@ async function onSubmit() {
   form.set('year', book.value.anneeEdition)
   form.set('image', book.value.image)
 
-  postBook(form)
+  api.postBook(form)
 
   book.value.titre = ''
   book.value.categorie = ''

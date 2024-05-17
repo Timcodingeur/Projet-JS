@@ -1,10 +1,10 @@
 <template>
-  <form method="">
+  <form @submit.prevent="onSubmit">
     <label for="username">Nom d'utilisateur :</label> <br />
-    <input type="text" name="username" id="username" /><br />
+    <input type="text" name="username" id="username" v-model="user.username" /><br />
 
     <label for="password">Mot de passe :</label> <br />
-    <input type="password" name="password" id="password" /> <br />
+    <input type="password" name="password" id="password" v-model="user.password" /> <br />
 
     <input type="submit" value="Submit" />
   </form>
@@ -12,7 +12,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { login } from '../../service/Axios.js'
+import api from '@/service/Axios.js'
 
 let user = ref({ username: null, password: null })
 
@@ -27,7 +27,7 @@ function onSubmit() {
     return
   }
 
-  let token = login(book.value.username, book.value.password)
+  api.login(user.value.username, user.value.password)
 
   user.value.username = ''
   user.value.password = ''
