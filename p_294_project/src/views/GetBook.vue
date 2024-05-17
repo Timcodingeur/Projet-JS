@@ -149,13 +149,10 @@ function resetFields() {
   selectedBookId = ''
   bookDetails = null
 }
-<<<<<<< HEAD
 
 async function onModification() {
   suggestion.push('ret')
 }
-=======
->>>>>>> 9312d94a94d237faa82f71bd7bd16c96598df56b
 </script>
 
 <style>
