@@ -155,7 +155,7 @@ authorsRouter.get("/:id/book", auth, async (req, res) => {
 /**
  * @swagger
  * /api/authors/:id:
- *  get:
+ *  post:
  *    tags: [Authors]
  *    security :
  *      - bearerAuth: []
@@ -200,6 +200,21 @@ authorsRouter.post("/", auth, (req, res) => {
       res.status(500).json({ message, data: error });
     });
 });
+
+
+/**
+ * @swagger
+ * /api/products/:id
+ *  put:
+ *    tags: [Authors]
+ *  security:
+ *    - bearerAuth: []
+ *        summary: Change a author.
+ *          description: Change a author. That cahnged also in the database.
+ *           responses:
+ *            200:
+ *
+ */
 
 authorsRouter.put("/:id", auth, (req, res) => {
   const authorId = req.params.id;

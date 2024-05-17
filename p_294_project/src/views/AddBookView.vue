@@ -76,6 +76,7 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue'
+import { getCategoryByName } from '../../service/Axios'
 
 let book = ref({
   titre: '',
@@ -104,11 +105,21 @@ async function handleImage(e) {
   book.value.image = file
 }
 
-async function handleFile(e) {
-  let file = e.target.files[0]
-  if (file.type != 'application/pdf') {
-    alert('The wrong type of image is choose')
-    return
+
+async function getEditorByName(name) {
+  const response = await axios.get('http://localhost:3000/api/editors', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const editors = response.data.data
+
+  for (const edit of editors) {
+    if (edit.nameEdit == name) {
+      return edit.id.toString()
+    }
   }
   book.value.extrait = file
 }
@@ -151,16 +162,29 @@ async function onSubmit() {
 
   let form = new FormData()
 
-  form.append('titre', book.value.titre)
-  form.append('categorie', book.value.categorie)
-  form.append('nombre de page', book.value.nmbPage)
-  form.append("nom de l'auteur", book.value.nomAuteur)
-  form.append("prenom de l'auteur", book.value.prenomAuteur)
-  form.append("nom de l'editeur", book.value.nomEditeur)
-  form.append("annee de l'edition", book.value.anneeEdition)
-  form.append('fichiers', [book.value.extrait, book.value.image])
+  form.set('title', book.value.titre.trimStart().trimEnd())
+  form.set('category', parseInt(categoryId.trimStart().trimEnd()))
+  form.set('nmbPage', parseInt(book.value.nmbPage.trimStart().trimEnd()))
+  form.set('extrait', book.value.extrait.trimStart().trimEnd())
+  form.set('resume', book.value.resume.trimStart().trimEnd())
+  form.set('author', parseInt(authorId.trimStart().trimEnd()))
+  form.set('editor', parseInt(editorId.trimStart().trimEnd()))
+  form.set("annee de l'edition", parseInt(book.value.anneeEdition.trimStart().trimEnd()))
+  form.set('year', book.value.anneeEdition)
+  form.set('image', book.value.image)
 
-  let data = await getAuthorByName(prenomAuteur, nomAuteur)
+  postBook(form)
+
+  book.value.titre = ''
+  book.value.categorie = ''
+  book.value.nmbPage = ''
+  book.value.resume = ''
+  book.value.nomAuteur = ''
+  book.value.prenomAuteur = ''
+  book.value.nomEditeur = ''
+  book.value.anneeEdition = ''
+  book.value.image = null
+  book.value.extrait = ''
 }
 </script>
 

@@ -3,11 +3,20 @@
     <form @submit.prevent="onSubmit">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="titre" /> <br />
+      <input type="text" name="titre" id="titre" v-model="titre" />
+      <br />
+
+      <!--v-for pour afficher les résultats avec v-on:???="onModification"-->
+      <div v-for="sug in suggestion">{{ sug }}</div>
 
       <!-- Pour les catégories -->
-      <label for="categoryName">La catégorie :</label> <br />
-      <input type="text" name="categoryName" id="categoryName" v-model="categoryName" />
+      <label for="categorie">La catégorie :</label> <br />
+      <select name="categorie" id="categorie">
+        <option value="Bande dessinée">Bande dessinée</option>
+        <option value="Manga">Manga</option>
+        <option value="Roman">Roman</option>
+        <option value="Livre">Livre</option>
+      </select>
       <br />
 
       <!-- Pour le nombre de pages -->
@@ -58,6 +67,7 @@ let books = []
 let bookDetails = null
 const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcxNDEzOTA2MywiZXhwIjoxNzQ1Njk2NjYzfQ.Jij32qCOGqXA8YrWYe-De22vMJwo9f1eEfPu8JFu920'
+let suggestion = ['test', 'test2']
 
 async function fetchBooks() {
   const params = {
@@ -140,6 +150,10 @@ function resetFields() {
   anneeEdition = ''
   selectedBookId = ''
   bookDetails = null
+}
+
+async function onModification() {
+  suggestion.push('ret')
 }
 </script>
 
