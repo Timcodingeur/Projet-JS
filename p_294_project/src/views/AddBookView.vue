@@ -103,7 +103,7 @@ let book = ref({
   prenomAuteur: '',
   nomEditeur: '',
   anneeEdition: null,
-  image: null,
+  image: '',
   extrait: null
 })
 
@@ -119,6 +119,7 @@ function handleImage(e) {
     return
   }
   book.value.image = file
+  console.log(file)
 }
 
 async function getEditorByName(name) {
@@ -157,9 +158,8 @@ async function getAuthorByName(firstname, lastname) {
 
 async function postBook(form) {
   return await axios
-    .post('http://localhost:3000/api/books', formToJSON(form), {
+    .post('http://localhost:3000/api/books', form, {
       headers: {
-        Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`
       }
@@ -241,7 +241,7 @@ async function onSubmit() {
   book.value.prenomAuteur = ''
   book.value.nomEditeur = ''
   book.value.anneeEdition = ''
-  book.value.image = null
+  book.value.image = ''
   book.value.extrait = ''
 }
 </script>

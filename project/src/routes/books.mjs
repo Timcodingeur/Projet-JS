@@ -384,7 +384,8 @@ booksRouter.get("/:id/author", auth, async (req, res) => {
 });
 
 booksRouter.post("/", auth, upload.single("image"), (req, res) => {
-  console.log(req.body);
+  req.body.image = "../../" + req.file.destination + req.file.filename;
+
   Book.create(req.body)
     .then((createdBook) => {
       console.log(createdBook);
