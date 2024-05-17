@@ -1,8 +1,9 @@
-<script setup>
+<script>
 import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
+
   <header id="header">
     <nav>
       <RouterLink to="/">Home</RouterLink>

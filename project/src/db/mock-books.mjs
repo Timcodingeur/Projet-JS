@@ -2,11 +2,11 @@ export let books = [
   {
     id: 1,
     title: "OnePiece n°1",
+    editor: 1,
     category: 1,
     nmbPage: 150,
     resume: "JSp...JSP...JSP",
     author: 1,
-    editor: 2,
     year: "1997",
     image: "../../images/OnePiece1.jpg",
     extrait: "http://localhost:3000/api/mangas",
