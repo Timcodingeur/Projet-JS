@@ -2,8 +2,6 @@ export let books = [
   {
     id: 1,
     title: "OnePiece n°1",
-    extrait: "Je deviendrais le rois des pirate",
-    year: "1997",
     editor: 1,
     category: 1,
     nmbPage: 150,
