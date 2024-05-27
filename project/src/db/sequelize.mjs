@@ -80,6 +80,11 @@ const importBooks = () => {
       nmbPage: book.nmbPage,
       image: book.image,
       resume: book.resume,
+      author: book.author,
+      editor: book.editor,
+      date_year: book.year,
+      image: book.image,
+      extrait: book.extrait,
     }).then((book) => console.log(book.toJSON()));
   });
 };

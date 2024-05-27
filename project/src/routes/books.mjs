@@ -317,6 +317,7 @@ booksRouter.get("/:id", auth, async (req, res) => {
       resume: book.resume,
       year: book.year,
       nmbPage: book.nmbPage,
+
       author: author
         ? {
             id: author.id,
@@ -342,6 +343,9 @@ booksRouter.get("/:id", auth, async (req, res) => {
             updatedAt: category.updatedAt,
           }
         : null,
+
+
+
       image: book.image,
       created: book.created,
       comments: comments, // Ajout des commentaires avec juste l'ID et la note
@@ -392,15 +396,16 @@ booksRouter.get("/:id/author", auth, async (req, res) => {
   });
 });
 
-booksRouter.post("/", auth, upload.array("fichiers", 2), (req, res) => {
-  const extrait = req.files[0];
-  const image = req.files[1];
+booksRouter.post("/", auth, upload.single("image"), (req, res) => {
+  req.body.image = "../../" + req.file.destination + req.file.filename;
   Book.create(req.body)
     .then((createdBook) => {
+      console.log(createdBook);
       const message = `Le livre ${createdBook.title} a bien été crée !`;
       res.json(sucess(message, createdBook));
     })
     .catch((error) => {
+      console.log(error);
       if (error instanceof ValidationError) {
         return res.status(400).json({ message: error.message, data: error });
       }

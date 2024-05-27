@@ -1,6 +1,6 @@
 export const BooksModel = (sequelize, DataTypes) => {
   const Book = sequelize.define(
-    "Books",
+    "Book",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -11,7 +11,7 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
-          msg: "Ce nom est déjà pris.",
+          msg: "Ce titre est déjà pris.",
         },
         validate: {
           is: {
@@ -19,24 +19,20 @@ export const BooksModel = (sequelize, DataTypes) => {
             msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
           },
           notEmpty: {
-            msg: "Le nom ne peut pas être vide.",
+            msg: "Le titre ne peut pas être vide.",
           },
           notNull: {
-            msg: "Le nom est une propriété obligatoire",
+            msg: "Le titre est une propriété obligatoire",
           },
         },
       },
-      extrait: {
-        type: DataTypes.STRING,
+      category: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "L'extrait'ne peut pas être vide.",
-          },
-          notNull: {
-            msg: "L'extrait est une propriété obligatoire",
-          },
-        },
+      },
+      nmbPage: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       year: {
         type: DataTypes.STRING,
@@ -58,7 +54,6 @@ export const BooksModel = (sequelize, DataTypes) => {
           },
         },
       },
-
       author: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -71,24 +66,27 @@ export const BooksModel = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-
+      year: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       category: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
       image: {
         type: DataTypes.STRING,
+        allowNull: true,
+      },
+      extrait: {
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          is: {
-            args: /^[^?!]+$/,
-            msg: "Les caractères spéciaux comme ?! ne sont pas autorisés, à l'exception des espaces, - et _.",
-          },
           notEmpty: {
-            msg: "L'image ne peut pas être vide",
+            msg: "L'extrait'ne peut pas être vide.",
           },
           notNull: {
-            msg: "l'image est une propriété obligatoire",
+            msg: "L'extrait est une propriété obligatoire",
           },
         },
       },

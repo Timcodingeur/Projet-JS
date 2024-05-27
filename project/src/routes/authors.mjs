@@ -201,6 +201,21 @@ authorsRouter.post("/", auth, (req, res) => {
     });
 });
 
+
+/**
+ * @swagger
+ * /api/products/:id
+ *  put:
+ *    tags: [Authors]
+ *  security:
+ *    - bearerAuth: []
+ *        summary: Change a author.
+ *          description: Change a author. That cahnged also in the database.
+ *           responses:
+ *            200:
+ *
+ */
+
 authorsRouter.put("/:id", auth, (req, res) => {
   const authorId = req.params.id;
   Author.update(req.body, { where: { id: authorId } })

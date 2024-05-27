@@ -1,6 +1,6 @@
 <template>
   <div class="addBook">
-    <form @submit.prevent="onSubmit" id="form">
+    <form @submit.prevent="onSubmit">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
       <input type="text" name="titre" id="titre" v-model="book.titre" maxlength="60" /> <br />
@@ -39,7 +39,14 @@
 
       <!-- Un résumé de l'ouvrage -->
       <label for="resume">Résumé de l'ouvrage</label> <br />
-      <textarea name="resume" id="resume" cols="40" rows="5" v-model="book.resume"></textarea>
+      <textarea
+        name="resume"
+        id="resume"
+        cols="40"
+        rows="5"
+        v-model="book.resume"
+        maxlength="1024"
+      ></textarea>
       <br />
 
       <!-- Le nom et le prénom de l'écrivain -->
@@ -83,21 +90,25 @@
 </template>
 
 <script setup>
+import axios, { formToJSON } from 'axios'
 import { ref } from 'vue'
-import api from '@/service/Axios.js'
+import { getCategoryByName } from '../../service/Axios'
 
 let book = ref({
   titre: '',
   categorie: '',
-  nmbPage: 1,
+  nmbPage: null,
   resume: '',
   nomAuteur: '',
   prenomAuteur: '',
   nomEditeur: '',
   anneeEdition: null,
-  image: '',
+  image: null,
   extrait: null
 })
+
+let token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNDEzNzYyOSwiZXhwIjoxNzQ1Njk1MjI5fQ.vRalmBymJvo8HAEe5JSgMdl_O-tRNuot2YjS-LXW4HI'
 
 function handleImage(e) {
   let file = e.target.files[0]
@@ -108,39 +119,94 @@ function handleImage(e) {
     return
   }
   book.value.image = file
-  console.log(file)
+}
+
+async function getEditorByName(name) {
+  const response = await axios.get('http://localhost:3000/api/editors', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const editors = response.data.data
+
+  for (const edit of editors) {
+    if (edit.nameEdit == name) {
+      return edit.id.toString()
+    }
+  }
+}
+
+async function getAuthorByName(firstname, lastname) {
+  const response = await axios.get('http://localhost:3000/api/authors', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const authors = response.data.data
+
+  for (const auth of authors) {
+    if (auth.firstname == firstname && auth.lastname == lastname) {
+      return auth.id.toString()
+    }
+  }
+}
+
+async function postBook(form) {
+  return await axios
+    .post('http://localhost:3000/api/books', formToJSON(form), {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then((response) => response.data)
 }
 
 async function onSubmit() {
-  if (book.value.titre == '') {
-    alert(`The input titre du livre cannot be empty`)
-  } else if (book.value.categorie == '') {
-    alert(`The input catégorie cannot be empty`)
-  } else if (book.value.nmbPage == '') {
-    alert(`The input nombre de page cannot be empty`)
-  } else if (book.value.resume == '') {
-    alert(`The input resume cannot be empty`)
-  } else if (book.value.nomAuteur == '') {
-    alert(`The input nom de l'auteur cannot be empty`)
-  } else if (book.value.nomEditeur == '') {
-    alert(`The input nom de l'éditeur cannot be empty`)
-  } else if (book.value.prenomAuteur == '') {
-    alert(`The input prénom de l'auteur cannot be empty`)
-  } else if (book.value.anneeEdition == '') {
-    alert(`The input annee de l'édition cannot be empty`)
+  book.value.nmbPage = book.value.nmbPage.toString()
+  book.value.anneeEdition = book.value.anneeEdition.toString()
 
+  if (book.value.titre.trim().length == 0) {
+    alert(`The input titre du livre cannot be empty`)
+    return
+  } else if (book.value.categorie.trim().length == 0) {
+    alert(`The input catégorie cannot be empty`)
+    return
+  } else if (book.value.nmbPage.trim().length == 0) {
+    alert(`The input nombre de page cannot be empty`)
+    return
+  } else if (book.value.extrait.trim().length == 0) {
+    alert(`The input extrait cannot be empty`)
+    return
+  } else if (book.value.resume.trim().length == 0) {
+    alert(`The input resume cannot be empty`)
+    return
+  } else if (book.value.nomAuteur.trim().length == 0) {
+    alert(`The input nom de l'auteur cannot be empty`)
+    return
+  } else if (book.value.nomEditeur.trim().length == 0) {
+    alert(`The input nom de l'éditeur cannot be empty`)
+    return
+  } else if (book.value.prenomAuteur.trim().length == 0) {
+    alert(`The input prénom de l'auteur cannot be empty`)
+    return
+  } else if (book.value.anneeEdition.trim().length == 0) {
+    alert(`The input annee de l'édition cannot be empty`)
     return
   }
 
-  let authorId = await api.getAuthorByName(book.value.prenomAuteur + ' ' + book.value.nomAuteur)
+  let authorId = await getAuthorByName(book.value.prenomAuteur, book.value.nomAuteur)
 
-  let editorId = await api.getEditorByName(book.value.nomEditeur)
+  let editorId = await getEditorByName(book.value.nomEditeur)
 
-  let categoryId = await api.getCategoryByName(book.value.categorie)
+  let categoryId = await getCategoryByName(book.value.categorie)
 
-  book.value.nmbPage = book.value.nmbPage.toString()
-
-  book.value.anneeEdition = book.value.anneeEdition.toString()
+  book.value.extrait = book.value.extrait.toString()
 
   if (authorId == undefined) {
     alert(`L'auteur n'existe pas`)
@@ -165,7 +231,7 @@ async function onSubmit() {
   form.set('year', book.value.anneeEdition)
   form.set('image', book.value.image)
 
-  api.postBook(form)
+  postBook(form)
 
   book.value.titre = ''
   book.value.categorie = ''
@@ -175,12 +241,12 @@ async function onSubmit() {
   book.value.prenomAuteur = ''
   book.value.nomEditeur = ''
   book.value.anneeEdition = ''
-  book.value.image = ''
+  book.value.image = null
   book.value.extrait = ''
 }
 </script>
 
-<style>
+<style scoped>
 form {
   max-width: 500px;
   margin: 0 auto;
@@ -193,6 +259,7 @@ label {
 input[type='text'],
 input[type='number'],
 input[type='date'],
+input[type='url'],
 select,
 textarea {
   width: 100%;

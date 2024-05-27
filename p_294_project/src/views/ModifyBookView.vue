@@ -1,5 +1,6 @@
 <template>
   <div class="modifyBook">
+
     <h2>Modifier le livre</h2>
     <form @submit.prevent="onSubmit">
       <!-- Titre -->
@@ -36,13 +37,15 @@
 
       <!-- Bouton pour submit le form -->
       <input type="submit" value="Modifier" />
+
     </form>
   </div>
 </template>
 
 <script setup>
+
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -148,6 +151,99 @@ async function onSubmit() {
 
 <style>
 .modifyBook {
+import { ref } from 'vue'
+import api from '@/service/Axios.js'
+
+const props = defineProps({
+  id: Number
+})
+
+let apiBook = await api.getBookById(props.id).then((response) => response.data.data)
+
+let book = ref({ ...apiBook })
+
+async function onSubmit() {
+  book.value.nmbPage = book.value.nmbPage.toString()
+  book.value.anneeEdition = book.value.anneeEdition.toString()
+
+  if (book.value.titre.trim().length == 0) {
+    alert(`The input titre du livre cannot be empty`)
+    return
+  } else if (book.value.categorie.trim().length == 0) {
+    alert(`The input catégorie cannot be empty`)
+    return
+  } else if (book.value.nmbPage.trim().length == 0) {
+    alert(`The input nombre de page cannot be empty`)
+    return
+  } else if (book.value.extrait.trim().length == 0) {
+    alert(`The input extrait cannot be empty`)
+    return
+  } else if (book.value.resume.trim().length == 0) {
+    alert(`The input resume cannot be empty`)
+    return
+  } else if (book.value.nomAuteur.trim().length == 0) {
+    alert(`The input nom de l'auteur cannot be empty`)
+    return
+  } else if (book.value.nomEditeur.trim().length == 0) {
+    alert(`The input nom de l'éditeur cannot be empty`)
+    return
+  } else if (book.value.prenomAuteur.trim().length == 0) {
+    alert(`The input prénom de l'auteur cannot be empty`)
+    return
+  } else if (book.value.anneeEdition.trim().length == 0) {
+    alert(`The input annee de l'édition cannot be empty`)
+    return
+  }
+
+  let authorId = await api.getAuthorByName(book.value.prenomAuteur + ' ' + book.value.nomAuteur)
+
+  let editorId = await api.getEditorByName(book.value.nomEditeur)
+
+  let categoryId = await api.getCategoryByName(book.value.categorie)
+
+  book.value.extrait = book.value.extrait.toString()
+
+  if (authorId == undefined) {
+    alert(`L'auteur n'existe pas`)
+    return
+  }
+
+  if (editorId == undefined) {
+    alert(`L'éditeur n'existe pas`)
+    return
+  }
+
+  let form = new FormData()
+
+  form.set('title', book.value.titre.trimStart().trimEnd())
+  form.set('category', parseInt(categoryId.trimStart().trimEnd()))
+  form.set('nmbPage', parseInt(book.value.nmbPage.trimStart().trimEnd()))
+  form.set('extrait', book.value.extrait.trimStart().trimEnd())
+  form.set('resume', book.value.resume.trimStart().trimEnd())
+  form.set('author', parseInt(authorId.trimStart().trimEnd()))
+  form.set('editor', parseInt(editorId.trimStart().trimEnd()))
+  form.set("annee de l'edition", parseInt(book.value.anneeEdition.trimStart().trimEnd()))
+  form.set('year', book.value.year)
+  form.set('image', book.value.image)
+
+  api.putBook(props.id, form)
+
+  book.value.titre = ''
+  book.value.categorie = ''
+  book.value.nmbPage = ''
+  book.value.resume = ''
+  book.value.nomAuteur = ''
+  book.value.prenomAuteur = ''
+  book.value.nomEditeur = ''
+  book.value.anneeEdition = ''
+  book.value.image = null
+  book.value.extrait = ''
+}
+</script>
+
+<style scoped>
+form {
+
   max-width: 500px;
   margin: 0 auto;
 }
@@ -158,6 +254,10 @@ label {
 
 input[type='text'],
 input[type='number'],
+
+input[type='date'],
+input[type='url'],
+
 select,
 textarea {
   width: 100%;
@@ -167,6 +267,16 @@ textarea {
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+
+select {
+  width: calc(100% - 2px);
+}
+
+textarea {
+  resize: vertical;
+}
+
 
 input[type='submit'] {
   background-color: #4caf50;
@@ -180,5 +290,17 @@ input[type='submit'] {
 
 input[type='submit']:hover {
   background-color: #45a049;
+}
+
+
+input[type='file'] {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+input:invalid,
+select:invalid,
+textarea:invalid {
+  border-color: red;
 }
 </style>

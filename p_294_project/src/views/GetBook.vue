@@ -3,11 +3,17 @@
     <form @submit.prevent="onSubmit">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="titre" /> <br />
+      <input type="text" name="titre" id="titre" v-model="titre" />
+      <br />
+
+      <!--v-for pour afficher les résultats avec v-on:???="onModification"-->
+      <div v-for="sug in suggestion">{{ sug }}</div>
 
       <!-- Pour les catégories -->
+
       <label for="categoryName">La catégorie :</label> <br />
       <input type="text" name="categoryName" id="categoryName" v-model="categoryName" />
+
       <br />
 
       <!-- Pour le nombre de pages -->
@@ -114,8 +120,9 @@
 </template>
 
 <script setup>
+
 import { ref, computed } from 'vue'
-import axios from 'axios'
+
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -135,8 +142,10 @@ const showConfirmDialog = ref(false)
 const showCommentForm = ref(false)
 const comment = ref('')
 const note = ref('5')
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcxNDEzOTA2MywiZXhwIjoxNzQ1Njk2NjYzfQ.Jij32qCOGqXA8YrWYe-De22vMJwo9f1eEfPu8JFu920'
+
+
+import api from '@/service/Axios.js'
+
 
 const filteredBooks = computed(() => books.value.filter((book) => book !== null))
 
@@ -158,15 +167,12 @@ async function fetchBooks() {
   })
 
   try {
-    const response = await axios.get('http://localhost:3000/api/books', {
-      params,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
-    books.value = response.data.books.filter((book) => book !== null) || []
-    console.log('Livres trouvés:', books.value)
+
+    const response = await api.getBooks()
+    books = response.data.books || []
+    console.log('Livres trouvés:', books)
+    return books
+
   } catch (error) {
     console.error('Erreur lors de la recherche des livres:', error)
   }
@@ -174,15 +180,11 @@ async function fetchBooks() {
 
 async function fetchBookById(id) {
   try {
-    const response = await axios.get(`http://localhost:3000/api/books/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
-    bookDetails.value = response.data.book // Correction ici
-    console.log('Détails du livre:', bookDetails.value)
-    showModal.value = true
+
+    const response = await api.getBookById(selectedBookId)
+    bookDetails = response.data
+    console.log('Détails du livre:', bookDetails)
+    return bookDetails
   } catch (error) {
     console.error('Erreur lors de la récupération des détails du livre:', error)
   }
@@ -253,6 +255,10 @@ function modifyBook(id) {
   } else {
     console.error('ID de livre invalide')
   }
+}
+
+async function onModification() {
+  suggestion.push('ret')
 }
 </script>
 

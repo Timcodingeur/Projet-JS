@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
 app.get("/", (req, res) => {
   res.redirect(`http://localhost:${port}`);
 });
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
 app.use("/api/books", booksRouter);
 
 app.use("/api/comments", commentsRouter);
