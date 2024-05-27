@@ -5,8 +5,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('../views/SeeAllBook.vue')
+      name: 'getBookByCategory',
+      component: () => import('../views/GetBook.vue')
     },
     {
       path: '/login',
@@ -33,11 +33,6 @@ const router = createRouter({
       path: '/addComment',
       name: 'addComment',
       component: () => import('../views/AddCommentView.vue')
-    },
-    {
-      path: '/getBook',
-      name: 'getBookByCategory',
-      component: () => import('../views/GetBook.vue')
     }
   ]
 })

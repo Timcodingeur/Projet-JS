@@ -6,14 +6,8 @@ import { RouterLink, RouterView } from 'vue-router'
   <header id="header">
     <nav>
       <RouterLink class="routerLink" to="/">Home</RouterLink>
-      <RouterLink class="routerLink" to="/login">Login</RouterLink>
       <RouterLink class="routerLink" to="/addBook">Ajouer un livre</RouterLink>
-      <RouterLink class="routerLink" to="/modifyBook">Modifier un livre</RouterLink>
-      <RouterLink class="routerLink" to="/deleteBook">Supprimer un livre</RouterLink>
-      <RouterLink class="routerLink" to="/addComment">Ajouter un commentaire</RouterLink>
-      <RouterLink class="routerLink" to="/getBook"
-        >Rechercher des livres via des paramètres</RouterLink
-      >
+      <RouterLink class="routerLink" to="/login">Login</RouterLink>
     </nav>
   </header>
   <div id="main">
