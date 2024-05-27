@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import axios from 'axios'
+
 import { ref } from 'vue'
 import api from '@/service/Axios.js'
 
