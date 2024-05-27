@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import axios from 'axios'
+import api from '@/service/Axios.js'
 
 let titre = ''
 let nmbPage = ''
@@ -85,13 +85,7 @@ async function fetchBooks() {
   })
 
   try {
-    const response = await axios.get('http://localhost:3000/api/books', {
-      params,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
+    const response = await api.getBooks()
     books = response.data.books || []
     console.log('Livres trouvés:', books)
     return books
@@ -108,12 +102,7 @@ async function fetchBookById() {
   }
 
   try {
-    const response = await axios.get(`http://localhost:3000/api/books/${selectedBookId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
+    const response = await api.getBookById(selectedBookId)
     bookDetails = response.data
     console.log('Détails du livre:', bookDetails)
     return bookDetails
