@@ -21,7 +21,10 @@ export default {
           }
         }
       )
-      .then((response) => localStorage.setItem('token', response.data.token))
+      .then((response) => {
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('userId', response.data.data.id)
+      })
   },
   async getBooks() {
     return await api.get('/api/books')
@@ -38,12 +41,7 @@ export default {
     })
   },
   async putBook(id, data) {
-    return await api.put('/api/books/' + id, data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
+    return await api.put('/api/books/' + id, data)
   },
   async deleteBook(id) {
     return await api.delete('/api/books/' + id)
@@ -77,5 +75,14 @@ export default {
     const category = categories.find((category) => category.name == name)
 
     return category.id.toString()
+  },
+  async getAuthorByNames(authorName) {
+    return await api.get('/api/authors?lastname=' + authorName)
+  },
+  async getEditorByNames(editorName) {
+    return await api.get('/api/editors?nameEdit=' + editorName)
+  },
+  async getBooksWithParams(params) {
+    return await api.get('/api/books', { params: params })
   }
 }

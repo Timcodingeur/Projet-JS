@@ -10,23 +10,13 @@
 </template>
 
 <script setup>
-import axios from 'axios'
-import { ref, watchEffect } from 'vue'
-import {
-  getBooks,
-  AddBook,
-  DeleteBook,
-  AddComment,
-  getCategories,
-  getEditorByName,
-  getAuthorByName,
-  postBook
-} from '../../service/Axios'
+import { ref } from 'vue'
+import api from '@/service/Axios.js'
 
 let bookdisplay = ref([])
 
 async function getallbook() {
-  let responce = await getBooks()
+  let responce = await api.getBooks()
   let responce2 = responce.data.books
   bookdisplay.value = responce2
   console.log(bookdisplay)

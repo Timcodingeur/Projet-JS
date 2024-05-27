@@ -3,17 +3,11 @@
     <form @submit.prevent="onSubmit">
       <!-- Pour le titre -->
       <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="titre" />
-      <br />
-
-      <!--v-for pour afficher les résultats avec v-on:???="onModification"-->
-      <div v-for="sug in suggestion">{{ sug }}</div>
+      <input type="text" name="titre" id="titre" v-model="titre" /> <br />
 
       <!-- Pour les catégories -->
-
       <label for="categoryName">La catégorie :</label> <br />
       <input type="text" name="categoryName" id="categoryName" v-model="categoryName" />
-
       <br />
 
       <!-- Pour le nombre de pages -->
@@ -120,9 +114,8 @@
 </template>
 
 <script setup>
-
 import { ref, computed } from 'vue'
-
+import api from '@/service/Axios.js'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -142,10 +135,6 @@ const showConfirmDialog = ref(false)
 const showCommentForm = ref(false)
 const comment = ref('')
 const note = ref('5')
-
-
-import api from '@/service/Axios.js'
-
 
 const filteredBooks = computed(() => books.value.filter((book) => book !== null))
 
@@ -167,12 +156,9 @@ async function fetchBooks() {
   })
 
   try {
-
-    const response = await api.getBooks()
-    books = response.data.books || []
-    console.log('Livres trouvés:', books)
-    return books
-
+    const response = await api.getBooksWithParams(params)
+    books.value = response.data.books.filter((book) => book !== null) || []
+    console.log('Livres trouvés:', books.value)
   } catch (error) {
     console.error('Erreur lors de la recherche des livres:', error)
   }
@@ -180,11 +166,10 @@ async function fetchBooks() {
 
 async function fetchBookById(id) {
   try {
-
-    const response = await api.getBookById(selectedBookId)
-    bookDetails = response.data
-    console.log('Détails du livre:', bookDetails)
-    return bookDetails
+    const response = await api.getBookById(id)
+    bookDetails.value = response.data.book
+    console.log('Détails du livre:', bookDetails.value)
+    showModal.value = true
   } catch (error) {
     console.error('Erreur lors de la récupération des détails du livre:', error)
   }
@@ -194,8 +179,8 @@ async function onSubmit() {
   await fetchBooks()
 }
 
-function selectBook(id) {
-  fetchBookById(id)
+async function selectBook(id) {
+  await fetchBookById(id)
 }
 
 function closeModal() {
@@ -210,12 +195,7 @@ function confirmDeleteBook(id) {
 
 async function deleteBook(id) {
   try {
-    await axios.delete(`http://localhost:3000/api/books/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
+    await api.deleteBook(id)
     books.value = books.value.filter((book) => book.id !== id)
     closeModal()
     showConfirmDialog.value = false
@@ -226,23 +206,14 @@ async function deleteBook(id) {
 
 async function addComment(bookId) {
   try {
-    const response = await axios.post(
-      'http://localhost:3000/api/comments',
-      {
-        comment: comment.value,
-        note: note.value,
-        user: 1, // quentin fini
-        book: bookId
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      }
+    const response = await api.addComment(
+      comment.value,
+      note.value,
+      localStorage.getItem('userId'),
+      bookId
     )
     console.log('Commentaire ajouté:', response.data)
-    fetchBookById(bookId)
+    await fetchBookById(bookId)
     showCommentForm.value = false
   } catch (error) {
     console.error("Erreur lors de l'ajout du commentaire:", error)
@@ -255,10 +226,6 @@ function modifyBook(id) {
   } else {
     console.error('ID de livre invalide')
   }
-}
-
-async function onModification() {
-  suggestion.push('ret')
 }
 </script>
 

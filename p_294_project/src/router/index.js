@@ -6,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/SeeAllBook.vue')
     },
     {
       path: '/login',
@@ -23,7 +23,6 @@ const router = createRouter({
       name: 'modifyBook',
       component: () => import('../views/ModifyBookView.vue'),
       props: true
-
     },
     {
       path: '/deleteBook',
@@ -39,11 +38,6 @@ const router = createRouter({
       path: '/getBook',
       name: 'getBookByCategory',
       component: () => import('../views/GetBook.vue')
-    },
-    {
-      path: '/SeeBook',
-      name: 'SeeBooks',
-      component: () => import('../views/SeeAllBook.vue')
     }
   ]
 })
