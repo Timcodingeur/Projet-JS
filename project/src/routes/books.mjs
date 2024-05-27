@@ -1,6 +1,6 @@
 // Importez les modules requis et configurez l'authentification
 import express from "express";
-import { Author, Book, Category, Editor, Comment } from "../db/sequelize.mjs";
+import { Book, Author, Editor, Category, Comment } from "../models/index.mjs";
 import { sucess } from "./helper.mjs";
 import { ValidationError, Op } from "sequelize";
 import { auth } from "../auth/auth.mjs";
@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const booksRouter = express();
+
+// Route GET /books
 /**
  * @swagger
  * /api/books/:
@@ -73,7 +75,6 @@ const booksRouter = express();
  *                      description: The book's resume
  *                      example: Luffy, un garçon espiègle, rêve de devenir le roi des pirates en trouvant le “One Piece”, un fabuleux trésor. Seulement, Luffy a avalé un fruit du démon qui l'a transformé en homme élastique.
  */
-// Route GET /books
 booksRouter.get("/", auth, async (req, res) => {
   try {
     const {
@@ -95,12 +96,6 @@ booksRouter.get("/", auth, async (req, res) => {
       };
     }
 
-    if (categoryName) {
-      queryConditions["$category.name$"] = {
-        [Op.like]: `%${accentFold(categoryName)}%`,
-      };
-    }
-
     if (nmbPage) {
       queryConditions.nmbPage = nmbPage;
     }
@@ -114,7 +109,6 @@ booksRouter.get("/", auth, async (req, res) => {
     let Books = await Book.findAll({
       where: queryConditions,
       include: include,
-      order: ["title"],
       limit: limit,
     });
 
@@ -122,7 +116,7 @@ booksRouter.get("/", auth, async (req, res) => {
     const detailedBooks = await Promise.all(
       Books.map(async (book) => {
         const [author, editor, category, comments] = await Promise.all([
-          Author.findByPk(book.author),
+          Author.findByPk(book.author + 1),
           Editor.findByPk(book.editor),
           Category.findByPk(book.category),
           Comment.findAll({
@@ -136,6 +130,14 @@ booksRouter.get("/", auth, async (req, res) => {
             !accentFold(author.lastname)
               .toLowerCase()
               .includes(accentFold(nomAuteur).toLowerCase()))
+        )
+          return null;
+        if (
+          categoryName &&
+          (!category ||
+            !accentFold(category.name)
+              .toLowerCase()
+              .includes(accentFold(categoryName).toLowerCase()))
         )
           return null;
 
@@ -289,7 +291,7 @@ booksRouter.get("/:id", auth, async (req, res) => {
     const bookId = req.params.id;
     const book = await Book.findByPk(bookId);
 
-    if (book === null) {
+    if (!book) {
       return res.status(404).json({
         message:
           "Le livre demandé n'existe pas. Merci d'essayer un autre identifiant.",
@@ -303,7 +305,7 @@ booksRouter.get("/:id", auth, async (req, res) => {
       Category.findByPk(book.category),
       Comment.findAll({
         where: { book: bookId },
-        attributes: ["id", "comment", "note"], // Sélection limitée aux ID des commentaires et aux notes
+        attributes: ["id", "comment", "note"],
       }),
     ]);
 
@@ -315,25 +317,35 @@ booksRouter.get("/:id", auth, async (req, res) => {
       resume: book.resume,
       year: book.year,
       nmbPage: book.nmbPage,
-      author: {
-        id: author.id,
-        firstname: author.firstname,
-        lastname: author.lastname,
-        created: author.created,
-        updatedAt: author.updatedAt,
-      },
-      editor: {
-        id: editor.id,
-        nameEdit: editor.nameEdit,
-        created: editor.created,
-        updatedAt: editor.updatedAt,
-      },
-      category: {
-        id: category.id,
-        name: category.name,
-        created: category.created,
-        updatedAt: category.updatedAt,
-      },
+
+      author: author
+        ? {
+            id: author.id,
+            firstname: author.firstname,
+            lastname: author.lastname,
+            created: author.created,
+            updatedAt: author.updatedAt,
+          }
+        : null,
+      editor: editor
+        ? {
+            id: editor.id,
+            nameEdit: editor.nameEdit,
+            created: editor.created,
+            updatedAt: editor.updatedAt,
+          }
+        : null,
+      category: category
+        ? {
+            id: category.id,
+            name: category.name,
+            created: category.created,
+            updatedAt: category.updatedAt,
+          }
+        : null,
+
+
+
       image: book.image,
       created: book.created,
       comments: comments, // Ajout des commentaires avec juste l'ID et la note
@@ -403,25 +415,46 @@ booksRouter.post("/", auth, upload.single("image"), (req, res) => {
     });
 });
 
-booksRouter.put("/:id", auth, (req, res) => {
-  const BookId = req.params.id;
-  Book.update(req.body, { where: { id: BookId } })
-    .then((_) => {
-      return Book.findByPk(BookId).then((updateBook) => {
-        if (updateBook === null) {
-          const message =
-            "Le livre demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
-          return res.status(404).json({ message });
-        }
-        const message = `Le livre ${updateBook.title} a bien été modifié`;
-        res.json(sucess(message, updateBook));
-      });
-    })
-    .catch((error) => {
-      const message =
-        "Le livre n'a pas pu être mis à jour. Merci de réessayer dans quelques instants.";
-      res.status(500).json({ message, data: error });
-    });
+// booksRouter.js
+// booksRouter.js
+booksRouter.put("/:id", auth, async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const {
+      title,
+      extrait,
+      resume,
+      year,
+      nmbPage,
+      author,
+      editor,
+      category,
+      image,
+    } = req.body;
+
+    const book = await Book.findByPk(bookId);
+    if (!book) {
+      return res.status(404).json({ message: "Livre non trouvé" });
+    }
+
+    book.title = title;
+    book.extrait = extrait;
+    book.resume = resume;
+    book.year = year;
+    book.nmbPage = nmbPage;
+    book.author = author;
+    book.editor = editor;
+    book.category = category;
+    book.image = image;
+
+    await book.save();
+    res.status(200).json({ message: "Livre mis à jour avec succès", book });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du livre:", error);
+    res
+      .status(500)
+      .json({ message: "Erreur serveur", error: error.toString() });
+  }
 });
 
 booksRouter.delete("/:id", auth, (req, res) => {

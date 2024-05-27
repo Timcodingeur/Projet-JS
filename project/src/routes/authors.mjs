@@ -8,16 +8,23 @@ const authorsRouter = express();
 
 /**
  * @swagger
- * /api/authors/:
+ * /api/authors/{id}:
  *  get:
  *    tags: [Authors]
- *    security :
+ *    security:
  *      - bearerAuth: []
- *    summary: Retrieve all authors.
- *    description: Retrieve all authors. Can be used to populate a select HTML tag.
+ *    summary: Retrieve one author.
+ *    description: Retrieve details of a single author.
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: Numeric ID of the author to retrieve.
  *    responses:
  *      200:
- *        description: All authors
+ *        description: A single author details
  *        content:
  *          application/json:
  *            schema:
@@ -25,18 +32,18 @@ const authorsRouter = express();
  *              properties:
  *                data:
  *                  type: object
- *                  propreties:
+ *                  properties:
  *                    id:
  *                      type: integer
  *                      description: The author ID.
  *                      example: 1
  *                    firstname:
  *                      type: string
- *                      description: The author's firstname
+ *                      description: The author's firstname.
  *                      example: Jules
  *                    lastname:
  *                      type: string
- *                      description: The author's lastname
+ *                      description: The author's lastname.
  *                      example: Verne
  */
 
@@ -148,15 +155,15 @@ authorsRouter.get("/:id/book", auth, async (req, res) => {
 /**
  * @swagger
  * /api/authors/:id:
- *  post:
+ *  get:
  *    tags: [Authors]
  *    security :
  *      - bearerAuth: []
- *    summary: Add a author into the db.
- *    description: Add a author into the db.
+ *    summary: Retrieve one authors.
+ *    description: Retrieve one authors. Can be used to populate a select HTML tag.
  *    responses:
  *      200:
- *        description: One Author.
+ *        description: One Author
  *        content:
  *          application/json:
  *            schema:
@@ -169,11 +176,11 @@ authorsRouter.get("/:id/book", auth, async (req, res) => {
  *                      type: integer
  *                      description: The author ID.
  *                      example: 1
- *                    name:
+ *                    firstname:
  *                      type: string
  *                      description: The author's firstname
  *                      example: Jules
- *                    price:
+ *                    lastname:
  *                      type: number
  *                      description: The author's lastname
  *                      example: Verne
@@ -194,6 +201,7 @@ authorsRouter.post("/", auth, (req, res) => {
     });
 });
 
+
 /**
  * @swagger
  * /api/products/:id
@@ -207,6 +215,7 @@ authorsRouter.post("/", auth, (req, res) => {
  *            200:
  *
  */
+
 authorsRouter.put("/:id", auth, (req, res) => {
   const authorId = req.params.id;
   Author.update(req.body, { where: { id: authorId } })
