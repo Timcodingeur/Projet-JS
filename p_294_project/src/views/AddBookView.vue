@@ -35,7 +35,7 @@
 
       <!-- Pour un extrait -->
       <label for="extrait">Extrait :</label> <br />
-      <input type="file" name="extrait" id="extrait" accept=".pdf" @change="handleFile" /> <br />
+      <input type="url" name="extrait" id="extrait" v-model="book.extrait" /> <br />
 
       <!-- Un résumé de l'ouvrage -->
       <label for="resume">Résumé de l'ouvrage</label> <br />
@@ -83,7 +83,6 @@
 </template>
 
 <script setup>
-
 import { ref } from 'vue'
 import api from '@/service/Axios.js'
 
@@ -139,7 +138,9 @@ async function onSubmit() {
 
   let categoryId = await api.getCategoryByName(book.value.categorie)
 
-  book.value.extrait = book.value.extrait.toString()
+  book.value.nmbPage = book.value.nmbPage.toString()
+
+  book.value.anneeEdition = book.value.anneeEdition.toString()
 
   if (authorId == undefined) {
     alert(`L'auteur n'existe pas`)

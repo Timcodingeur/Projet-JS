@@ -46,7 +46,7 @@ export default {
     })
   },
   async deleteBook(id) {
-    return await axios.delete('/api/books/' + id)
+    return await api.delete('/api/books/' + id)
   },
   async getComment() {
     return await api.get('/api/comments')
@@ -58,14 +58,14 @@ export default {
     return await api.get('/api/categorys')
   },
   async getEditorByName(name) {
-    const editors = await axios.get('/api/editors').then((response) => response.data.data)
+    const editors = await api.get('/api/editors').then((response) => response.data.data)
 
     const editor = editors.find((editor) => name == editor.nameEdit)
 
     return editor.id.toString()
   },
   async getAuthorByName(name) {
-    const authors = await axios.get('/api/authors').then((response) => response.data.data)
+    const authors = await api.get('/api/authors').then((response) => response.data.data)
 
     const author = authors.find((author) => author.firstname + ' ' + author.lastname == name)
 

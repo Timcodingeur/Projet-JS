@@ -64,8 +64,6 @@ let anneeEdition = ''
 let selectedBookId = ''
 let books = []
 let bookDetails = null
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcxNDEzOTA2MywiZXhwIjoxNzQ1Njk2NjYzfQ.Jij32qCOGqXA8YrWYe-De22vMJwo9f1eEfPu8JFu920'
 let suggestion = ['test', 'test2']
 
 async function fetchBooks() {

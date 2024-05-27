@@ -3,15 +3,17 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-
   <header id="header">
     <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/addBook">Ajouer un livre</RouterLink>
-      <RouterLink to="/modifyBook">Modifier un livre</RouterLink>
-      <RouterLink to="/deleteBook">Supprimer un livre</RouterLink>
-      <RouterLink to="/addComment">Ajouter un commentaire</RouterLink>
-      <RouterLink to="/getBook">Rechercher des livres via des paramètres</RouterLink>
+      <RouterLink class="routerLink" to="/">Home</RouterLink>
+      <RouterLink class="routerLink" to="/login">Login</RouterLink>
+      <RouterLink class="routerLink" to="/addBook">Ajouer un livre</RouterLink>
+      <RouterLink class="routerLink" to="/modifyBook">Modifier un livre</RouterLink>
+      <RouterLink class="routerLink" to="/deleteBook">Supprimer un livre</RouterLink>
+      <RouterLink class="routerLink" to="/addComment">Ajouter un commentaire</RouterLink>
+      <RouterLink class="routerLink" to="/getBook"
+        >Rechercher des livres via des paramètres</RouterLink
+      >
     </nav>
   </header>
   <div id="main">
@@ -22,6 +24,10 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
+.routerLink {
+  color: black;
+}
+
 #main {
   display: flex;
   flex-direction: column;
@@ -44,10 +50,6 @@ import { RouterLink, RouterView } from 'vue-router'
   border-radius: 5px;
 }
 
-#content {
-  margin-top: 5em;
-}
-
 nav {
   width: 100%;
   font-size: 12px;
@@ -64,5 +66,9 @@ nav a {
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
+}
+
+#content {
+  margin-top: 5em;
 }
 </style>
