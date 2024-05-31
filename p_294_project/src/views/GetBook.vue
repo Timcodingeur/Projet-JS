@@ -1,41 +1,50 @@
 <template>
   <div class="GetBook">
-    <form @submit.prevent="onSubmit">
-      <!-- Pour le titre -->
-      <label for="titre">Titre du livre :</label> <br />
-      <input type="text" name="titre" id="titre" v-model="titre" /> <br />
+    <div class="form-container">
+      <form @submit.prevent="onSubmit" class="search-form">
+        <!-- Champ principal -->
+        <label for="titre">Titre du livre :</label> <br />
+        <input type="text" name="titre" id="titre" v-model="titre" /> <br />
 
-      <!-- Pour les catégories -->
-      <label for="categoryName">La catégorie :</label> <br />
-      <input type="text" name="categoryName" id="categoryName" v-model="categoryName" />
-      <br />
+        <!-- Bouton pour afficher/masquer les autres champs -->
+        <button type="button" @click="toggleFields" class="toggle-button">
+          {{ showFields ? 'Masquer les autres champs' : 'Afficher les autres champs' }}
+        </button>
 
-      <!-- Pour le nombre de pages -->
-      <label for="nmbPage">Nombre de Page :</label> <br />
-      <input type="number" name="nmbPage" id="nmbPage" v-model.number="nmbPage" /> <br />
+        <!-- Champs supplémentaires -->
+        <div v-show="showFields" class="additional-fields">
+          <label for="categoryName">La catégorie :</label> <br />
+          <input type="text" name="categoryName" id="categoryName" v-model="categoryName" />
+          <br />
 
-      <!-- Le nom et le prénom de l'écrivain -->
-      <label for="nomAuteur">Nom de l'auteur :</label> <br />
-      <input type="text" name="nomAuteur" id="nomAuteur" v-model="nomAuteur" /> <br />
+          <label for="nmbPage">Nombre de Page :</label> <br />
+          <input type="number" name="nmbPage" id="nmbPage" v-model.number="nmbPage" /> <br />
 
-      <label for="prenomAuteur">Prénom de l'auteur :</label> <br />
-      <input type="text" name="prenomAuteur" id="prenomAuteur" v-model="prenomAuteur" /> <br />
+          <label for="nomAuteur">Nom de l'auteur :</label> <br />
+          <input type="text" name="nomAuteur" id="nomAuteur" v-model="nomAuteur" /> <br />
 
-      <!-- Le nom de l'éditeur -->
-      <label for="nomEditeur">Nom de l'éditeur :</label> <br />
-      <input type="text" name="nomEditeur" id="nomEditeur" v-model="nomEditeur" /> <br />
+          <label for="prenomAuteur">Prénom de l'auteur :</label> <br />
+          <input type="text" name="prenomAuteur" id="prenomAuteur" v-model="prenomAuteur" /> <br />
 
-      <!-- L'année de l'édition -->
-      <label for="anneeEdition">Année de l'édition :</label> <br />
-      <input type="number" name="anneeEdition" id="anneeEdition" v-model.number="anneeEdition" />
-      <br />
+          <label for="nomEditeur">Nom de l'éditeur :</label> <br />
+          <input type="text" name="nomEditeur" id="nomEditeur" v-model="nomEditeur" /> <br />
 
-      <br />
+          <label for="anneeEdition">Année de l'édition :</label> <br />
+          <input
+            type="number"
+            name="anneeEdition"
+            id="anneeEdition"
+            v-model.number="anneeEdition"
+          />
+          <br />
+        </div>
 
-      <!-- Bouton pour submit le form -->
-      <input type="submit" value="Submit" />
-    </form>
+        <br />
 
+        <!-- Bouton de soumission -->
+        <input type="submit" value="Submit" class="submit-button" />
+      </form>
+    </div>
     <div v-for="book in filteredBooks" :key="book.id">
       <h3>{{ book.title }}</h3>
       <button @click="selectBook(book.id)">Voir détails</button>
@@ -135,6 +144,10 @@ const showConfirmDialog = ref(false)
 const showCommentForm = ref(false)
 const comment = ref('')
 const note = ref('5')
+const showFields = ref(false)
+function toggleFields() {
+  showFields.value = !showFields.value
+}
 
 const filteredBooks = computed(() => books.value.filter((book) => book !== null))
 
@@ -230,6 +243,59 @@ function modifyBook(id) {
 </script>
 
 <style>
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.search-form input[type='text'],
+.search-form input[type='number'],
+.search-form input[type='submit'],
+.search-form button.toggle-button {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.search-form input[type='text']:focus,
+.search-form input[type='number']:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.search-form input[type='submit'],
+.search-form button.toggle-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-form input[type='submit']:hover,
+.search-form button.toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.additional-fields {
+  margin-top: 20px;
+}
+
 p {
   color: black;
 }
