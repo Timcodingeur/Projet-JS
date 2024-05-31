@@ -38,6 +38,10 @@ label {
   color: green;
 }
 
+h3 {
+  color: white;
+}
+
 .loginFailed {
   color: red;
 }
