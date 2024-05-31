@@ -344,8 +344,6 @@ booksRouter.get("/:id", auth, async (req, res) => {
           }
         : null,
 
-
-
       image: book.image,
       created: book.created,
       comments: comments, // Ajout des commentaires avec juste l'ID et la note
@@ -397,7 +395,8 @@ booksRouter.get("/:id/author", auth, async (req, res) => {
 });
 
 booksRouter.post("/", auth, upload.single("image"), (req, res) => {
-  req.body.image = "../../" + req.file.destination + req.file.filename;
+  req.body.image =
+    "http://localhost:3000/" + req.file.destination + req.file.filename;
   Book.create(req.body)
     .then((createdBook) => {
       console.log(createdBook);

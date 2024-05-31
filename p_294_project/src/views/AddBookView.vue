@@ -131,16 +131,19 @@ async function onSubmit() {
 
     return
   }
+  try {
+    let authorId = await api.getAuthorByName(book.value.prenomAuteur + ' ' + book.value.nomAuteur)
 
-  let authorId = await api.getAuthorByName(book.value.prenomAuteur + ' ' + book.value.nomAuteur)
+    let editorId = await api.getEditorByName(book.value.nomEditeur)
 
-  let editorId = await api.getEditorByName(book.value.nomEditeur)
+    let categoryId = await api.getCategoryByName(book.value.categorie)
 
-  let categoryId = await api.getCategoryByName(book.value.categorie)
+    book.value.nmbPage = book.value.nmbPage.toString()
 
-  book.value.nmbPage = book.value.nmbPage.toString()
-
-  book.value.anneeEdition = book.value.anneeEdition.toString()
+    book.value.anneeEdition = book.value.anneeEdition.toString()
+  } catch (er) {
+    alert(`One of you data is wrong`)
+  }
 
   if (authorId == undefined) {
     alert(`L'auteur n'existe pas`)
