@@ -76,6 +76,7 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error('Erreur lors de la récupération du livre:', error)
+    alert('Erreur lors de la récupération du livre')
   }
 })
 
@@ -86,6 +87,7 @@ async function fetchAuthors() {
     authors.value = response.data.data
   } catch (error) {
     console.error('Erreur lors de la récupération des auteurs:', error)
+    alert('Erreur lors de la récupération des auteurs')
   }
 }
 
@@ -96,6 +98,7 @@ async function fetchEditors() {
     editors.value = response.data.data
   } catch (error) {
     console.error('Erreur lors de la récupération des éditeurs:', error)
+    alert('Erreur lors de la récupération des éditeurs')
   }
 }
 
@@ -116,6 +119,7 @@ async function onSubmit() {
     router.push({ name: 'getBookByCategory' })
   } catch (error) {
     console.error('Erreur lors de la modification du livre:', error)
+    alert('Erreur lors de la modification du livre')
   }
 }
 </script>
