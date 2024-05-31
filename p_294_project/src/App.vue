@@ -6,6 +6,7 @@ import { RouterLink, RouterView } from 'vue-router'
   <header id="header">
     <nav>
       <RouterLink class="routerLink" to="/">Home</RouterLink>
+      <RouterLink class="routerLink" to="/getBookByCategory">Rechercher un livre</RouterLink>
       <RouterLink class="routerLink" to="/addBook">Ajouer un livre</RouterLink>
       <RouterLink class="routerLink" to="/login">Login</RouterLink>
     </nav>

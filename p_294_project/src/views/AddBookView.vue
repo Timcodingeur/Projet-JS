@@ -9,10 +9,9 @@
       <label for="categorie">La catégorie :</label> <br />
       <select name="categorie" id="categorie" v-model="book.categorie">
         <option value=""></option>
-        <option value="Bande dessinée">Bande dessinée</option>
-        <option value="Manga">Manga</option>
-        <option value="Roman">Roman</option>
-        <option value="Livre">Livre</option>
+        <option v-for="category in categorys" :key="category.id" :value="category.name">
+          {{ category.name }}
+        </option>
       </select>
       <br />
 
@@ -42,17 +41,27 @@
       <textarea name="resume" id="resume" cols="40" rows="5" v-model="book.resume"></textarea>
       <br />
 
-      <!-- Le nom et le prénom de l'écrivain -->
-      <label for="nomAuteur">Nom de l'auteur :</label> <br />
-      <input type="text" name="nomAuteur" id="nomAuteur" v-model="book.nomAuteur" /> <br />
-
-      <label for="prenomAuteur">Prénom de l'auteur :</label> <br />
-      <input type="text" name="prenomAuteur" id="prenomAuteur" v-model="book.prenomAuteur" />
+      <label for="nomAuteur">Prénom et Nom de l'auteur :</label> <br />
+      <select name="nomAuteur" id="nomAuteur" v-model="book.auteur">
+        <option value=""></option>
+        <option
+          v-for="author in authors"
+          :key="author.id"
+          :value="author.firstname + ' ' + author.lastname"
+        >
+          {{ author.firstname }} {{ author.lastname }}
+        </option>
+      </select>
       <br />
 
       <!-- Le nom de l'éditeur -->
       <label for="nomEditeur">Nom de l'éditeur :</label> <br />
-      <input type="text" name="nomEditeur" id="nomEditeur" v-model="book.nomEditeur" /> <br />
+      <select name="nomEditeur" id="nomEditeur" v-model="book.nomEditeur">
+        <option value=""></option>
+        <option v-for="editor in editors" :key="editor.id" :value="editor.nameEdit">
+          {{ editor.nameEdit }}
+        </option>
+      </select>
 
       <!-- L'année de l'édition -->
       <label for="anneeEdition">Année de l'édition :</label> <br />
@@ -83,7 +92,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import api from '@/service/Axios.js'
 
 let book = ref({
@@ -91,12 +100,21 @@ let book = ref({
   categorie: '',
   nmbPage: 1,
   resume: '',
-  nomAuteur: '',
-  prenomAuteur: '',
+  auteur: '',
   nomEditeur: '',
   anneeEdition: null,
   image: '',
   extrait: null
+})
+
+let categorys = ref(null)
+let authors = ref(null)
+let editors = ref(null)
+
+onMounted(async () => {
+  await api.getCategories().then((response) => (categorys.value = response.data.data))
+  await api.getAuthors().then((response) => (authors.value = response.data.data))
+  await api.getEditors().then((response) => (editors.value = response.data.data))
 })
 
 function handleImage(e) {
@@ -108,7 +126,6 @@ function handleImage(e) {
     return
   }
   book.value.image = file
-  console.log(file)
 }
 
 async function onSubmit() {
@@ -120,29 +137,31 @@ async function onSubmit() {
     alert(`The input nombre de page cannot be empty`)
   } else if (book.value.resume == '') {
     alert(`The input resume cannot be empty`)
-  } else if (book.value.nomAuteur == '') {
+  } else if (book.value.auteur == '') {
     alert(`The input nom de l'auteur cannot be empty`)
   } else if (book.value.nomEditeur == '') {
     alert(`The input nom de l'éditeur cannot be empty`)
-  } else if (book.value.prenomAuteur == '') {
-    alert(`The input prénom de l'auteur cannot be empty`)
   } else if (book.value.anneeEdition == '') {
     alert(`The input annee de l'édition cannot be empty`)
-
     return
   }
+
+  let authorId = 0
+  let editorId = 0
+  let categoryId = 0
+
   try {
-    let authorId = await api.getAuthorByName(book.value.prenomAuteur + ' ' + book.value.nomAuteur)
+    authorId = await api.getAuthorByName(book.value.auteur)
 
-    let editorId = await api.getEditorByName(book.value.nomEditeur)
+    editorId = await api.getEditorByName(book.value.nomEditeur)
 
-    let categoryId = await api.getCategoryByName(book.value.categorie)
+    categoryId = await api.getCategoryByName(book.value.categorie)
 
     book.value.nmbPage = book.value.nmbPage.toString()
 
     book.value.anneeEdition = book.value.anneeEdition.toString()
   } catch (er) {
-    alert(`One of you data is wrong`)
+    alert(`One of your data is wrong`)
   }
 
   if (authorId == undefined) {
@@ -174,8 +193,7 @@ async function onSubmit() {
   book.value.categorie = ''
   book.value.nmbPage = ''
   book.value.resume = ''
-  book.value.nomAuteur = ''
-  book.value.prenomAuteur = ''
+  book.value.auteur = ''
   book.value.nomEditeur = ''
   book.value.anneeEdition = ''
   book.value.image = ''

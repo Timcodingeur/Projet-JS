@@ -83,6 +83,7 @@
               <li v-for="comment in bookDetails.comments" :key="comment.id">
                 {{ comment.comment }} - Note: {{ comment.note }}
               </li>
+              <li>Note moyenne: {{ chiant(bookDetails.comments) }}</li>
             </ul>
           </div>
           <button @click="confirmDeleteBook(bookDetails.id)">Supprimer</button>
@@ -150,6 +151,15 @@ function toggleFields() {
 }
 
 const filteredBooks = computed(() => books.value.filter((book) => book !== null))
+
+function chiant(arr) {
+  let i = 0
+  arr.forEach((array) => {
+    i += parseInt(array.note)
+  })
+  i = i / arr.length
+  return i
+}
 
 async function fetchBooks() {
   const params = {

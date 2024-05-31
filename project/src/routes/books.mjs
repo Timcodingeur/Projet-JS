@@ -105,11 +105,9 @@ booksRouter.get("/", auth, async (req, res) => {
     }
 
     // Limite de résultats
-    let limit = req.query.limit ? parseInt(req.query.limit, 10) : 6;
     let Books = await Book.findAll({
       where: queryConditions,
       include: include,
-      limit: limit,
     });
 
     // Récupération des détails des livres
@@ -399,12 +397,10 @@ booksRouter.post("/", auth, upload.single("image"), (req, res) => {
     "http://localhost:3000/" + req.file.destination + req.file.filename;
   Book.create(req.body)
     .then((createdBook) => {
-      console.log(createdBook);
       const message = `Le livre ${createdBook.title} a bien été crée !`;
       res.json(sucess(message, createdBook));
     })
     .catch((error) => {
-      console.log(error);
       if (error instanceof ValidationError) {
         return res.status(400).json({ message: error.message, data: error });
       }

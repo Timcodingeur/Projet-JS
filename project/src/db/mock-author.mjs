@@ -17,7 +17,7 @@ export let authors = [
   {
     id: 4,
     lastname: "Akutami",
-    firstname: "gege",
+    firstname: "Gege",
   },
   {
     id: 5,

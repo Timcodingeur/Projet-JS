@@ -88,5 +88,11 @@ export default {
   },
   async getBooksWithParams(params) {
     return await api.get('/api/books', { params: params })
+  },
+  async getAuthors() {
+    return await api.get('/api/authors')
+  },
+  async getEditors() {
+    return await api.get('/api/editors')
   }
 }

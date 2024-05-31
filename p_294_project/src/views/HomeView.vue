@@ -10,6 +10,8 @@ onMounted(async () => {
     .then((response) => response.data.books)
     .catch((error) => console.log('Please log in before'))
 
+  console.log(books)
+
   if (books.length <= 5) {
     recentBooks.value = books
     return
@@ -21,15 +23,15 @@ onMounted(async () => {
 </script>
 
 <template>
-    <p>
+    <p style="color: white; width: 800px; text-align: center; margin-left: auto; margin-right: auto; margin-bottom: 50px; font-size: 20px;">
         Passion-lecture est un site web dédié à la sauvegarde et à la préservation des livres numériques. 
         Ce portail offre une plateforme sécurisée où les utilisateurs peuvent stocker, organiser et accéder à leurs collections de livres électroniques. 
         Grâce à des technologies de pointe en matière de sauvegarde et de cryptage, Passion-lecture garantit que chaque livre est protégé contre les pertes de données et les accès non autorisés.
     </p>
     <div style="display: flex">
         <div v-for="book in recentBooks" :key="book.id">
-            <h3>{{ book.title }}</h3>
-            <img :src="book.image" style="width: 200px; height: 300px; margin-right: 10px;"></img>
+            <h3 style="text-align: center;">{{ book.title }}</h3>
+            <img :src="book.image" style="height: 300px; margin-right: 10px;"></img>
         </div>
   </div>
 </template>

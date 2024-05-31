@@ -9,7 +9,6 @@ export let books = [
     author: 1,
     year: "1997",
     image: "http://localhost:3000/images/OnePiece1.jpg",
-
     extrait: "http://localhost:3000/api/mangas",
     created: new Date(),
   },
@@ -61,7 +60,6 @@ export let books = [
     author: 5,
     editor: 2,
     year: "2017",
-
     image: "http://localhost:3000/images/Berserk1.jpg",
     extrait: "http://localhost:3000/api/mangas",
     created: new Date(),
