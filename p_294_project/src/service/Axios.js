@@ -25,6 +25,10 @@ export default {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('userId', response.data.data.id)
       })
+      .catch((error) => {
+        console.error('Login error:', error)
+        throw error
+      })
   },
   async getBooks() {
     return await api.get('/api/books')

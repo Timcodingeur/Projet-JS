@@ -27,4 +27,11 @@ export let users = [
     firstname: "Timothy",
     lastname: "Jotterand",
   },
+  {
+    id: 5,
+    username: "Alessio",
+    password: "password",
+    firstname: "Alessio",
+    lastname: "Lopardo",
+  },
 ];

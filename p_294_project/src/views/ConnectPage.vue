@@ -5,6 +5,8 @@
 
     <label for="password">Mot de passe :</label> <br />
     <input type="password" name="password" id="password" v-model="user.password" /> <br />
+    <p class="loginSuccess" v-show="loginSuccess">connection successful</p>
+    <p class="loginFailed" v-show="loginFailed">connection failed</p>
 
     <input class="btn" type="submit" value="Submit" />
   </form>
@@ -15,8 +17,12 @@ import { ref } from 'vue'
 import api from '@/service/Axios.js'
 
 let user = ref({ username: null, password: null })
+let loginSuccess = ref(false)
+let loginFailed = ref(false)
+async function onSubmit() {
+  loginFailed.value = false
+  loginSuccess.value = false
 
-function onSubmit() {
   if (user.value.username.trim().length == 0) {
     alert('Le username est vide.')
     return
@@ -27,7 +33,12 @@ function onSubmit() {
     return
   }
 
-  api.login(user.value.username, user.value.password)
+  try {
+    await api.login(user.value.username, user.value.password)
+    loginSuccess.value = true
+  } catch (error) {
+    loginFailed.value = true
+  }
 
   user.value.username = ''
   user.value.password = ''
